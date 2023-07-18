@@ -1,16 +1,15 @@
 <script setup lang='ts'>
-import { ref } from 'vue';
-import { onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const props = defineProps<{
   options: string[]
 }>();
 
 const canvasRef = ref<HTMLCanvasElement | null>(null);
-let canvasWidth = 700;
-let canvasHeight = 700;
+let canvasWidth = 900;
+let canvasHeight = 900;
 let canvasOrigin = {x: 0, y: 0};
-let wheelRadius = 300;
+let wheelRadius = 450;
 let isWheelSpinning = false;
 
 function drawWheel(ctx: CanvasRenderingContext2D, rotation: number = 0) {
@@ -40,6 +39,7 @@ function drawWheel(ctx: CanvasRenderingContext2D, rotation: number = 0) {
 
     let color = '';
 
+    // TODO: Come up with a way to guarentee no side by side colors
     if (props.options.length % 2 == 0) {
       // Color scheme when it's an even number
       color = i % 2 == 0 ? 'red' : 'orange';
@@ -65,7 +65,9 @@ function drawWheel(ctx: CanvasRenderingContext2D, rotation: number = 0) {
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = 'black';
-    ctx.fillText(optionName, 45, 0);
+
+    // TODO: Find a better way to define x
+    ctx.fillText(optionName, wheelRadius/4, 0);
     ctx.restore();
   })
 
@@ -139,6 +141,7 @@ function animateWheel(ctx: CanvasRenderingContext2D, rotations: number[]): Promi
 
     const foo = () => {
       if (rotationIndex < rotations.length) {
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight)
         drawWheel(ctx, rotations[rotationIndex]);
         rotationIndex += 1;
         setTimeout(foo, 16.67);

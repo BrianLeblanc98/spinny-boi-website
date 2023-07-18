@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { VueFinalModal } from 'vue-final-modal'
+import { VueFinalModal } from 'vue-final-modal';
 
 defineProps<{
-  title?: string
-}>()
+  title: string,
+  options: any[]
+}>();
 
 const emit = defineEmits<{
   (e: 'update:modelValue', modelValue: boolean): void
-}>()
+}>();
 </script>
 
 <template>
@@ -27,5 +28,12 @@ const emit = defineEmits<{
       </ClientOnly>
     </div>
     <slot />
+
+    <ul>
+      <li v-for='option in options'>
+        <span> {{ option }} </span>
+        <input type='checkbox' />
+      </li>
+    </ul>
   </VueFinalModal>
 </template>
