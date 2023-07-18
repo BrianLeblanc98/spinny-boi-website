@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang='ts'>
 import { VueFinalModal } from 'vue-final-modal';
 
 defineProps<{
