@@ -1,15 +1,24 @@
+<script setup lang='ts'>
+import { ref } from 'vue';
+import { Track } from 'utils/tempRawTrackData';
+import { ModalsContainer } from 'vue-final-modal';
+
+const tracks = ref<string[]>([]);
+
+RAW_TRACK_DATA.forEach((track: Track, i) => {
+  if (i < 33) {
+    tracks.value.push(track.track_name)
+  }
+})
+</script>
+
 <template>
   <div>
-    <font-awesome-icon icon='fa-solid fa-home' class='fa-fw fa-lg'/>
-    <font-awesome-icon icon='fa-solid fa-user' class='fa-fw fa-lg'/>
-    <font-awesome-icon icon='fa-brands fa-github' class='fa-fw fa-lg'/>
-    <h1 class='text-3xl font-bold underline'>Spinny Boi</h1>
+    <TopNav />
     <SpinnyWheel
-      :options='[
-        "Lime Rock Park - Classic",
-        "Mount Panorama Circuit",
-        "Long Beach Street Circuit"
-      ]'
+      :options='tracks'
     />
+
+    <ModalsContainer />
   </div>
 </template>
