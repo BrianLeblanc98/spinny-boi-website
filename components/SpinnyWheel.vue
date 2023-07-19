@@ -1,6 +1,4 @@
 <script setup lang='ts'>
-import { ref, onMounted } from 'vue';
-
 const props = defineProps<{
   options: string[]
 }>();
@@ -11,6 +9,14 @@ let canvasHeight = 900;
 let canvasOrigin = {x: 0, y: 0};
 let wheelRadius = 450;
 let isWheelSpinning = false;
+
+onUpdated(() => {
+  // When props are changed, i.e. when owned tracks changes, re-draw the wheel
+  const ctx = canvasRef.value?.getContext('2d');
+  if (ctx) {
+    drawWheel(ctx, Math.random()*2*Math.PI);
+  }
+});
 
 function drawWheel(ctx: CanvasRenderingContext2D, rotation: number = 0) {
   // Create the frame of the spinner wheel
@@ -155,7 +161,7 @@ function animateWheel(ctx: CanvasRenderingContext2D, rotations: number[]): Promi
 }
 
 function handleMouseClickOnSpin(ctx: CanvasRenderingContext2D) {
-  if (!isWheelSpinning) {
+  if (!isWheelSpinning && props.options.length > 0) {
     isWheelSpinning = true;
     const winningIndex = Math.floor(Math.random() * props.options.length);
     const rotations = getRotationFrames(winningIndex);
