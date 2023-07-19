@@ -20,7 +20,7 @@ function handleClosed(modalReturn: modalReturn) {
   } else if (modalReturn.modalType == 'cars') {
     carStore.carInfo = modalReturn.ownedInfo;
   } else {
-    console.log('Closing modal returned invalid modalType');
+    console.error('Closing modal returned invalid modalType');
   }
 }
 
