@@ -1,5 +1,6 @@
 <script setup lang='ts'>
 import { useTrackStore } from '@/stores/trackStore';
+import { useCarStore } from '@/stores/carStore';
 
 const modalShow = ref<boolean>(false);
 const modalTitle = ref<string>('');
@@ -7,6 +8,7 @@ const modalType = ref<MODAL_TYPE>('');
 const modalOwnedInfo = ref<{}>([]);
 
 const trackStore = useTrackStore();
+const carStore = useCarStore();
 
 function modalUpdateVisibility() {
   modalShow.value = false;
@@ -16,7 +18,9 @@ function handleClosed(modalReturn: modalReturn) {
   if (modalReturn.modalType == 'tracks') {
     trackStore.trackInfo = modalReturn.ownedInfo;
   } else if (modalReturn.modalType == 'cars') {
-    // TODO: When car store is made, update it here
+    carStore.carInfo = modalReturn.ownedInfo;
+  } else {
+    console.error('Closing modal returned invalid modalType');
   }
 }
 
@@ -32,7 +36,7 @@ function openSetOwnedTracks() {
 }
 
 function openSetOwnedCars() {
-  openModal('Set Owned Cars', 'cars', { '2': { name: 'Golf', owned: true } });
+  openModal('Set Owned Cars', 'cars', carStore.carInfo);
 }
 </script>
 
