@@ -24,6 +24,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "@pinia/nuxt": "^0.4.11",
+    "firebase": "^10.0.0",
     "pinia": "^2.1.4",
     "vue-final-modal": "^4.4.4"
   },
