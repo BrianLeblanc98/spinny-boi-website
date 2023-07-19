@@ -14,6 +14,7 @@ onUpdated(() => {
   // When props are changed, i.e. when owned tracks changes, re-draw the wheel
   const ctx = canvasRef.value?.getContext('2d');
   if (ctx) {
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     drawWheel(ctx, Math.random()*2*Math.PI);
   }
 });
@@ -145,18 +146,18 @@ function animateWheel(ctx: CanvasRenderingContext2D, rotations: number[]): Promi
   return new Promise<void>((resolve) => {
     let rotationIndex = 0;
 
-    const foo = () => {
+    const frame = () => {
       if (rotationIndex < rotations.length) {
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight)
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
         drawWheel(ctx, rotations[rotationIndex]);
         rotationIndex += 1;
-        setTimeout(foo, 16.67);
+        setTimeout(frame, 16.67);
       } else {
         resolve();
       }
     }
 
-    foo();
+    frame();
   });
 }
 
@@ -192,7 +193,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class='spinnerWheel'>
+  <div class='spinnyWheel'>
     <canvas
       ref='canvasRef'
       :width='canvasWidth'

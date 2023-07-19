@@ -6,6 +6,10 @@ const tempCars: ownedInfo = {
   '94': {
     name: '[Legacy] Ferrari 488 GT3',
     owned: false
+  },
+  '117': {
+    name: 'Supercars Holden ZB Commodore',
+    owned: false
   }
 }
 

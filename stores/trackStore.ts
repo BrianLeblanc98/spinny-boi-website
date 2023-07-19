@@ -10,6 +10,14 @@ const tempTracks: ownedInfo = {
   '173': {
     name: 'Suzuka International Racing Course',
     owned: false
+  },
+  '195': {
+    name: 'Twin Ring Motegi',
+    owned: false
+  },
+  '199': {
+    name: 'Circuit Zolder',
+    owned: false
   }
 }
 
