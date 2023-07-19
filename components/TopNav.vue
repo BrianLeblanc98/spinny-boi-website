@@ -1,37 +1,51 @@
 <script setup lang='ts'>
+import { useTrackStore } from '@/stores/trackStore';
+
 const modalShow = ref<boolean>(false);
 const modalTitle = ref<string>('');
-const modalOptions = ref<any[]>([]);
+const modalType = ref<MODAL_TYPE>('');
+const modalOwnedInfo = ref<{}>([]);
 
-function modalConfirm() {
+const trackStore = useTrackStore();
+
+function modalUpdateVisibility() {
   modalShow.value = false;
 }
 
-function openModal(title: string, options: any[]) {
+function handleClosed(modalReturn: modalReturn) {
+  if (modalReturn.modalType == 'tracks') {
+    trackStore.trackInfo = modalReturn.ownedInfo;
+  } else if (modalReturn.modalType == 'cars') {
+    // TODO: When car store is made, update it here
+  }
+}
+
+function openModal(title: string, type: MODAL_TYPE, options: ownedInfo) {
   modalTitle.value = title;
-  modalOptions.value = options;
+  modalType.value = type;
+  modalOwnedInfo.value = options;
   modalShow.value = true;
 }
 
 function openSetOwnedTracks() {
-  openModal('Set Owned Tracks', [1,2,3]);
+  openModal('Set Owned Tracks', 'tracks', trackStore.trackInfo);
 }
 
 function openSetOwnedCars() {
-  openModal('Set Owned Cars', ['a', 'b', 'c']);
+  openModal('Set Owned Cars', 'cars', { '2': { name: 'Golf', owned: true } });
 }
 </script>
 
 <template>
   <div>
-    <SelectOptionsModal
+    <SelectOwnedInfoModal
       v-model='modalShow'
       :title='modalTitle'
-      :options='modalOptions'
-      @confirm='() => modalConfirm()'
-    >
-      <!-- <p>VModel: The content of the modal</p> -->
-    </SelectOptionsModal>
+      :type='modalType'
+      :ownedInfo='modalOwnedInfo'
+      @updateVisibility='() => modalUpdateVisibility()'
+      @closed='(modalReturn) => handleClosed(modalReturn)'
+    />
 
     <ul class='mt-1 pb-1 border-b-2 border-black flex'>
       <li class='ml-3 mr-6'>
