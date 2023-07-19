@@ -7,8 +7,17 @@ const modalTitle = ref<string>('');
 const modalType = ref<MODAL_TYPE>('');
 const modalOwnedInfo = ref<{}>([]);
 
+const { user, fireBaseSignIn, fireBaseSignOut } = useFireBaseAuth();
 const trackStore = useTrackStore();
 const carStore = useCarStore();
+
+function signIn() {
+  fireBaseSignIn();
+}
+
+function signOut() {
+  fireBaseSignOut();
+}
 
 function modalUpdateVisibility() {
   modalShow.value = false;
@@ -48,10 +57,36 @@ function openSetOwnedCars() {
       :type='modalType'
       :ownedInfo='modalOwnedInfo'
       @updateVisibility='() => modalUpdateVisibility()'
-      @closed='(modalReturn) => handleClosed(modalReturn)'
+      @closed='(modalReturn: modalReturn) => handleClosed(modalReturn)'
     />
 
     <ul class='mt-1 pb-1 border-b-2 border-black flex'>
+      <li class='ml-3 mr-6'>
+        <img
+          v-if='user'
+          :src='(user.photoURL as any)'
+          class='w-8'
+        >
+
+        <span
+          v-else
+          class='text-blue-500 hover:text-blue-800 cursor-pointer'
+          @click='signIn()'
+        >
+          Login
+        </span>
+      </li>
+
+      <li class='ml-3 mr-6'>
+        <span
+          v-if='user'
+          class='text-blue-500 hover:text-blue-800 cursor-pointer'
+          @click='signOut()'
+        >
+          Sign Out
+        </span>
+      </li>
+
       <li class='ml-3 mr-6'>
         <span
           class='text-blue-500 hover:text-blue-800 cursor-pointer'

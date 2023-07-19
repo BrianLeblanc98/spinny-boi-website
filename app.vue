@@ -8,7 +8,7 @@ const carStore = useCarStore();
 </script>
 
 <template>
-  <div>
+  <ClientOnly>
     <TopNav />
     <SpinnyWheel
       :options='trackStore.getOwnedTrackNameArray'
@@ -18,5 +18,5 @@ const carStore = useCarStore();
     />
 
     <ModalsContainer />
-  </div>
+  </ClientOnly>
 </template>
