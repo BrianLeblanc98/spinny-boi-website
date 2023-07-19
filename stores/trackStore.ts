@@ -5,7 +5,11 @@ const tempTracks: ownedInfo = {
   },
   '100': {
     name: 'Barber Motorsports Park',
-    owned: true
+    owned: false
+  },
+  '173': {
+    name: 'Suzuka International Racing Course',
+    owned: false
   }
 }
 
@@ -14,8 +18,16 @@ export const useTrackStore = defineStore('tracks', {
     trackInfo: tempTracks as ownedInfo
   }),
   getters: {
-    getTrackInfo(state): ownedInfo {
-      return state.trackInfo;
+    getOwnedTrackNameArray(state): string[] {
+      let returnArray: string[] = [];
+
+      Object.keys(state.trackInfo).forEach((trackId) => {
+        if (state.trackInfo[trackId].owned) {
+          returnArray.push(state.trackInfo[trackId].name);
+        }
+      });
+
+      return returnArray;
     }
   },
   actions: {

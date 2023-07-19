@@ -15,6 +15,7 @@ const emit = defineEmits<{
 }>();
 
 function handleOpened() {
+  // When the modal is opened, populate checkedIds with previously selected options
   Object.keys(props.ownedInfo).forEach((ownedInfoId) => {
     if(props.ownedInfo[ownedInfoId].owned) {
       checkedIds.value.push(ownedInfoId);
@@ -38,7 +39,10 @@ function handleClosed() {
     optionsToEmit[optionId] = optionToEmit;
   });
 
+  // Clear the checkedIds otherwise they will be held over the next time the modal is opened
   checkedIds.value = [];
+
+  // Emit which store to update, and the information to update it with
   emit('closed', {
     modalType: props.type,
     ownedInfo: optionsToEmit
@@ -77,7 +81,5 @@ function handleClosed() {
         />
       </li>
     </ul>
-
-    {{ checkedIds }}
   </VueFinalModal>
 </template>
