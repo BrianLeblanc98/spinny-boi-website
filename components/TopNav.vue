@@ -71,49 +71,60 @@ function openSetOwnedCars() {
       @closed='(modalReturn: modalReturn) => handleClosed(modalReturn)'
     />
 
-    <ul class='mt-1 pb-1 border-b-2 border-black flex'>
-      <li class='ml-3 mr-6'>
-        <img
-          v-if='user'
-          :src='(user.photoURL as any)'
-          class='w-8'
-        >
-
-        <span
-          v-else
-          class='text-blue-500 hover:text-blue-800 cursor-pointer'
-          @click='signIn()'
-        >
-          Login
+    <ul class='flex justify-between bg-pink-100 py-2 border-b-2 border-black'>
+      <li>
+        <span href='#' class='py-1 px-4 text-lg font-semibold'>
+          Spinny Boi
         </span>
       </li>
-
-      <li class='ml-3 mr-6'>
-        <span
-          v-if='user'
-          class='text-blue-500 hover:text-blue-800 cursor-pointer'
-          @click='signOut()'
-        >
-          Sign Out
-        </span>
-      </li>
-
-      <li class='ml-3 mr-6'>
-        <span
-          class='text-blue-500 hover:text-blue-800 cursor-pointer'
-          @click='openSetOwnedTracks()'
-        >
-          Set Owned Tracks
-        </span>
-      </li>
-
-      <li class='ml-3 mr-6'>
-        <span
-          class='text-blue-500 hover:text-blue-800 cursor-pointer'
-          @click='openSetOwnedCars()'
-        >
-          Set Owned Cars
-        </span>
+      <li>
+        <ul class='flex justify-around'>
+          <li class='py-1 px-2'>
+            <span
+              class='text-sm text-stone-600'
+            >
+              Edit spin profiles
+            </span>
+          </li>
+          <li class='py-1 px-2'>
+            <span
+              class='text-sm text-blue-500 hover:text-blue-800 cursor-pointer'
+              @click='openSetOwnedTracks()'
+            >
+              Set Owned Tracks
+            </span>
+          </li>
+          <li class='py-1 px-2'>
+            <span
+              class='text-sm text-blue-500 hover:text-blue-800 cursor-pointer'
+              @click='openSetOwnedCars()'
+            >
+              Set Owned Cars
+            </span>
+          </li>
+          <li class='py-1 px-2'>
+            <span
+              v-if='!user'
+              class='text-sm text-blue-500 hover:text-blue-800 cursor-pointer'
+              @click='signIn()'
+            >
+              Login
+            </span>
+            <span
+              v-else
+              class='text-sm text-blue-500 hover:text-blue-800 cursor-pointer'
+              @click='signOut()'
+            >
+              Sign out
+            </span>
+          </li>
+          <li v-if='user' class='py-1'>
+            <img
+              class='rounded-full w-6 h-6 mx-2'
+              :src='(user.photoURL as any)'
+            />
+          </li>
+        </ul>
       </li>
     </ul>
 
