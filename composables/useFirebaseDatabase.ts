@@ -2,7 +2,7 @@ import { ref, set, onValue, update } from 'firebase/database';
 import { tempMockCars, tempMockTracks } from '@/utils/tempMockData';
 import { useUserStore } from '@/stores/userStore';
 
-export default function () {
+export default function() {
   const { $auth, $database } = useNuxtApp();
   const userStore = useUserStore();
 
@@ -53,11 +53,11 @@ export default function () {
     const userId = $auth.currentUser.uid;
     const updates: any = {};
 
-    if (saveTracks) {
+    if (saveCars) {
       updates[`/users/${userId}/carInfo`] = userStore.carInfo;
     }
 
-    if (saveCars) {
+    if (saveTracks) {
       updates[`/users/${userId}/trackInfo`] = userStore.trackInfo;
     }
 

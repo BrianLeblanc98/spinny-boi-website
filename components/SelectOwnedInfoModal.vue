@@ -20,7 +20,7 @@ function handleOpened() {
     if(props.ownedInfo[ownedInfoId].owned) {
       checkedIds.value.push(ownedInfoId);
     }
-  })
+  });
 }
 
 function handleClosed() {
