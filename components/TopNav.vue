@@ -1,22 +1,30 @@
 <script setup lang='ts'>
-import { useTrackStore } from '@/stores/trackStore';
-import { useCarStore } from '@/stores/carStore';
+import { useUserStore } from '@/stores/userStore';
 
 const modalShow = ref<boolean>(false);
 const modalTitle = ref<string>('');
 const modalType = ref<MODAL_TYPE>('');
 const modalOwnedInfo = ref<{}>([]);
 
-const { user, fireBaseSignIn, fireBaseSignOut } = useFireBaseAuth();
-const trackStore = useTrackStore();
-const carStore = useCarStore();
+const { user, firebaseSignIn, firebaseSignOut } = useFirebaseAuth();
+const { saveUserStoreToDatabase } = useFirebaseDatabase();
+
+const userStore = useUserStore();
 
 function signIn() {
-  fireBaseSignIn();
+  firebaseSignIn().then(() => {
+
+  }).catch(() => {
+    console.error('Error signing in');
+  });
 }
 
 function signOut() {
-  fireBaseSignOut();
+  firebaseSignOut().then(() => {
+    userStore.clear();
+  }).catch(() => {
+    console.error('Error signing out');
+  });
 }
 
 function modalUpdateVisibility() {
@@ -24,10 +32,13 @@ function modalUpdateVisibility() {
 }
 
 function handleClosed(modalReturn: modalReturn) {
+  // TODO: Check if the data is actually changed before saving to the firebase database
   if (modalReturn.modalType == 'tracks') {
-    trackStore.trackInfo = modalReturn.ownedInfo;
+    userStore.trackInfo = modalReturn.ownedInfo;
+    saveUserStoreToDatabase(true, false);
   } else if (modalReturn.modalType == 'cars') {
-    carStore.carInfo = modalReturn.ownedInfo;
+    userStore.carInfo = modalReturn.ownedInfo;
+    saveUserStoreToDatabase(false, true);
   } else {
     console.error('Closing modal returned invalid modalType');
   }
@@ -41,11 +52,11 @@ function openModal(title: string, type: MODAL_TYPE, options: ownedInfo) {
 }
 
 function openSetOwnedTracks() {
-  openModal('Set Owned Tracks', 'tracks', trackStore.trackInfo);
+  openModal('Set Owned Tracks', 'tracks', userStore.trackInfo);
 }
 
 function openSetOwnedCars() {
-  openModal('Set Owned Cars', 'cars', carStore.carInfo);
+  openModal('Set Owned Cars', 'cars', userStore.carInfo);
 }
 </script>
 

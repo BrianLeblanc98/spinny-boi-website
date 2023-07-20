@@ -36,6 +36,7 @@ export default defineNuxtConfig({
     public: {
       fireBaseApiKey: process.env.NUXT_FIRE_BASE_API_KEY,
       fireBaseAuthDomain: process.env.NUXT_FIRE_BASE_AUTH_DOMAIN,
+      fireBaseDatabaseURL: process.env.NUXT_FIRE_BASE_DATABASE_URL,
       fireBaseProjectId: process.env.NUXT_FIRE_BASE_PROJECT_ID,
       fireBaseStorageBucket: process.env.NUXT_FIRE_BASE_STORAGE_BUCKET,
       fireBaseMessagingSenderId: process.env.NUXT_FIRE_BASE_MESSAGING_SENDER_ID,
