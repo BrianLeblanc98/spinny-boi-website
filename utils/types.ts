@@ -1,5 +1,5 @@
 interface ownedInfo {
-  [id: string]: {
+  [package_id: string]: {
     name: string,
     owned: boolean
   }
