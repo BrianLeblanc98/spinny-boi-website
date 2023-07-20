@@ -1,20 +1,18 @@
 <script setup lang='ts'>
 import { ModalsContainer } from 'vue-final-modal';
-import { useTrackStore } from '@/stores/trackStore';
-import { useCarStore } from '@/stores/carStore';
+import { useUserStore } from '@/stores/userStore';
 
-const trackStore = useTrackStore();
-const carStore = useCarStore();
+const userStore = useUserStore();
 </script>
 
 <template>
   <ClientOnly>
     <TopNav />
     <SpinnyWheel
-      :options='trackStore.getOwnedTrackNameArray'
+      :options='userStore.getOwnedTrackNameArray'
     />
     <SpinnyWheel
-      :options='carStore.getOwnedCarNameArray'
+      :options='userStore.getOwnedCarNameArray'
     />
 
     <ModalsContainer />

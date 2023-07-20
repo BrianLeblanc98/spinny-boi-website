@@ -2,6 +2,7 @@
 // https://firebase.google.com/docs/web/setup#available-libraries
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import { getDatabase } from 'firebase/database';
 
 export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig();
@@ -10,6 +11,7 @@ export default defineNuxtPlugin(() => {
   const firebaseConfig = {
     apiKey: config.public.fireBaseApiKey,
     authDomain: config.public.fireBaseAuthDomain,
+    databaseURL: config.public.fireBaseDatabaseURL,
     projectId: config.public.fireBaseProjectId,
     storageBucket: config.public.fireBaseStorageBucket,
     messagingSenderId: config.public.fireBaseMessagingSenderId,
@@ -22,11 +24,13 @@ export default defineNuxtPlugin(() => {
 
   const auth = getAuth(app);
   const provider = new GoogleAuthProvider();
+  const database = getDatabase(app);
 
   return {
     provide: {
       auth: auth,
-      provider: provider
+      provider: provider,
+      database: database
     }
   }
 })

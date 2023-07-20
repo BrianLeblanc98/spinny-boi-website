@@ -2,11 +2,13 @@ import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, User, signOut 
 
 export default function() {
   const { $auth, $provider } = useNuxtApp();
+  const { updateUserStoreWithDatabase, saveUserStoreToDatabase } = useFirebaseDatabase();
 
   const user = useState<User | null>('user', () => null);
 
-  const fireBaseSignIn = () => {
-    signInWithPopup($auth, $provider)
+  const firebaseSignIn = async (): Promise<void> => {
+    return new Promise<void>((resolve, reject) => {
+      signInWithPopup($auth, $provider)
       .then((result) => {
         // This gives you a Google Access Token. You can use it to access the Google API.
         const credential = GoogleAuthProvider.credentialFromResult(result);
@@ -15,7 +17,7 @@ export default function() {
         const resultUser = result.user;
         user.value = resultUser;
         // IdP data available using getAdditionalUserInfo(result)
-        // ...
+        resolve();
       }).catch((error) => {
         // Handle Errors here.
         const errorCode = error.code;
@@ -25,14 +27,22 @@ export default function() {
         // The AuthCredential type that was used.
         const credential = GoogleAuthProvider.credentialFromError(error);
         // ...
+        reject();
       });
+    });
   }
 
-  const fireBaseSignOut = () => {
-    signOut($auth).then(() => {
-      // Sign-out successful.
-    }).catch((error) => {
-      // An error happened.
+  const firebaseSignOut = async () => {
+    return new Promise<void>((resolve, reject) => {
+      // When the user signs out, save the data in the store to the database
+      // This shouldn't be needed as it gets save when the modal closes, but keeping it for now
+      saveUserStoreToDatabase(true, true);
+
+      signOut($auth).then(() => {
+        resolve();
+      }).catch((error) => {
+        reject();
+      });
     });
   }
 
@@ -42,7 +52,9 @@ export default function() {
       // https://firebase.google.com/docs/reference/js/firebase.User
       const uid = resultUser.uid;
       user.value = resultUser;
-      // ...
+
+      // When the user signs in, pull their data into the store
+      updateUserStoreWithDatabase();
     } else {
       // User is signed out
       user.value = null;
@@ -51,7 +63,7 @@ export default function() {
 
   return {
     user,
-    fireBaseSignIn,
-    fireBaseSignOut
+    firebaseSignIn,
+    firebaseSignOut
   }
 }
