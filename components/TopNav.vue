@@ -69,7 +69,7 @@ function openSetOwnedCars() {
       :title="modalTitle"
       :type="modalType"
       :owned-info="modalOwnedInfo"
-      @update-visibility="() => modalUpdateVisibility()"
+      @updatevisibility="() => modalUpdateVisibility()"
       @closed="(modalReturn: modalReturn) => handleClosed(modalReturn)"
     />
 
