@@ -34,6 +34,9 @@ function handleClosed() {
     if (checkedIds.value.includes(optionId))
       optionToEmit.owned = true
 
+    if (props.ownedInfo[optionId].free)
+      (optionToEmit as any).free = true
+
     optionsToEmit[optionId] = optionToEmit
   })
 
@@ -51,12 +54,12 @@ function handleClosed() {
 <template>
   <VueFinalModal
     class="flex justify-center items-center"
-    content-class="flex flex-col p-4 bg-white rounded border border-gray-100"
+    content-class="flex flex-col px-4 py-2 bg-white rounded border border-gray-100 max-h-[90%] w-100 overflow-auto"
     @update:model-value="val => emit(&quot;updateVisibility&quot;, val)"
     @opened="handleOpened"
     @closed="handleClosed"
   >
-    <div class="flex items-center h-10">
+    <div class="flex items-center mb-2 h-10 border-b border-black">
       <h1 v-if="title" class="text-2xl">
         {{ title }}
       </h1>
@@ -66,17 +69,22 @@ function handleClosed() {
         </button>
       </ClientOnly>
     </div>
-    <slot />
 
     <ul>
-      <li v-for="(option, id) in ownedInfo" :key="id">
-        <span> {{ option.name }} </span>
+      <li
+        v-for="(option, id) in ownedInfo"
+        :key="id"
+        class="border-b border-slate-200"
+      >
         <input
           v-model="checkedIds"
           type="checkbox"
           :checked="option.owned"
           :value="id"
+          :disabled="option.free"
+          class="mr-4 align-middle"
         >
+        <span> {{ option.name }} </span>
       </li>
     </ul>
   </VueFinalModal>
