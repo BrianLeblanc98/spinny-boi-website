@@ -1,205 +1,204 @@
 <script setup lang='ts'>
 const props = defineProps<{
   options: string[]
-}>();
+}>()
 
-const canvasRef = ref<HTMLCanvasElement | null>(null);
-let canvasWidth = 900;
-let canvasHeight = 900;
-let canvasOrigin = {x: 0, y: 0};
-let wheelRadius = 450;
-let isWheelSpinning = false;
+const canvasRef = ref<HTMLCanvasElement | null>(null)
+const canvasWidth = 900
+const canvasHeight = 900
+let canvasOrigin = { x: 0, y: 0 }
+const wheelRadius = 450
+let isWheelSpinning = false
 
 onUpdated(() => {
   // When props are changed, i.e. when owned tracks changes, re-draw the wheel
-  const ctx = canvasRef.value?.getContext('2d');
+  const ctx = canvasRef.value?.getContext('2d')
   if (ctx) {
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-    drawWheel(ctx, Math.random()*2*Math.PI);
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight)
+    drawWheel(ctx, Math.random() * 2 * Math.PI)
   }
-});
+})
 
 function drawWheel(ctx: CanvasRenderingContext2D, rotation: number = 0) {
   // Create the frame of the spinner wheel
-  ctx.beginPath();
-  ctx.moveTo(canvasOrigin.x, canvasOrigin.y);
-  ctx.arc(canvasOrigin.x, canvasOrigin.y, wheelRadius, 0, 2 * Math.PI);
-  ctx.closePath();
-  ctx.stroke();
+  ctx.beginPath()
+  ctx.moveTo(canvasOrigin.x, canvasOrigin.y)
+  ctx.arc(canvasOrigin.x, canvasOrigin.y, wheelRadius, 0, 2 * Math.PI)
+  ctx.closePath()
+  ctx.stroke()
 
   // Create each slice
   props.options.forEach((optionName, i) => {
-    const turnAmount = (2 * Math.PI/props.options.length)
-    const startAngle = i * turnAmount;
-    const endAngle = startAngle + turnAmount;
+    const turnAmount = (2 * Math.PI / props.options.length)
+    const startAngle = i * turnAmount
+    const endAngle = startAngle + turnAmount
 
     // Create the colored slice
-    ctx.beginPath();
-    ctx.moveTo(canvasOrigin.x, canvasOrigin.y);
+    ctx.beginPath()
+    ctx.moveTo(canvasOrigin.x, canvasOrigin.y)
     ctx.arc(
       canvasOrigin.x,
       canvasOrigin.y,
       wheelRadius,
       startAngle + rotation,
-      endAngle + rotation
-    );
+      endAngle + rotation,
+    )
 
-    let color = '';
+    let color = ''
 
     // TODO: Come up with a way to guarentee no side by side colors
-    if (props.options.length % 2 == 0) {
+    if (props.options.length % 2 === 0) {
       // Color scheme when it's an even number
-      color = i % 2 == 0 ? 'red' : 'orange';
-    } else {
+      color = i % 2 === 0 ? 'red' : 'orange'
+    }
+    else {
       // Color scheme when it's a multiple of 3
-      if (i % 3 == 0) {
-        color = 'red';
-      } else if (i % 3 == 1) {
-        color = 'orange';
-      } else {
-        color = 'white';
-      }
+      if (i % 3 === 0)
+        color = 'red'
+      else if (i % 3 === 1)
+        color = 'orange'
+      else
+        color = 'white'
     }
 
-    ctx.fillStyle = color;
-    ctx.fill();
+    ctx.fillStyle = color
+    ctx.fill()
 
     // Add the text on top
-    ctx.save();
-    ctx.translate(canvasOrigin.x, canvasOrigin.y);
-    ctx.rotate(startAngle + turnAmount/2 + rotation);
-    ctx.font = '15px Comic Sans MS';
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'middle';
-    ctx.fillStyle = 'black';
+    ctx.save()
+    ctx.translate(canvasOrigin.x, canvasOrigin.y)
+    ctx.rotate(startAngle + turnAmount / 2 + rotation)
+    ctx.font = '15px Comic Sans MS'
+    ctx.textAlign = 'left'
+    ctx.textBaseline = 'middle'
+    ctx.fillStyle = 'black'
 
     // TODO: Find a better way to define x
-    ctx.fillText(optionName, wheelRadius/4, 0);
-    ctx.restore();
+    ctx.fillText(optionName, wheelRadius / 4, 0)
+    ctx.restore()
   })
-
 
   // Create the center spin button
   // Center circle
-  ctx.beginPath();
-  ctx.arc(canvasOrigin.x, canvasOrigin.y, 30, 0, 2 * Math.PI);
-  ctx.fillStyle = 'black';
-  ctx.fill();
+  ctx.beginPath()
+  ctx.arc(canvasOrigin.x, canvasOrigin.y, 30, 0, 2 * Math.PI)
+  ctx.fillStyle = 'black'
+  ctx.fill()
 
   // Triangle
-  ctx.beginPath();
-  ctx.moveTo(canvasOrigin.x - 8, canvasOrigin.y - 25);
-  ctx.lineTo(canvasOrigin.x, canvasOrigin.y - 40);
-  ctx.lineTo(canvasOrigin.x + 8, canvasOrigin.y - 25);
-  ctx.fill();
+  ctx.beginPath()
+  ctx.moveTo(canvasOrigin.x - 8, canvasOrigin.y - 25)
+  ctx.lineTo(canvasOrigin.x, canvasOrigin.y - 40)
+  ctx.lineTo(canvasOrigin.x + 8, canvasOrigin.y - 25)
+  ctx.fill()
 
   // Text
-  ctx.font = '20px Comic Sans MS';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillStyle = 'white';
-  ctx.fillText('Spin', canvasOrigin.x, canvasOrigin.y);
+  ctx.font = '20px Comic Sans MS'
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.fillStyle = 'white'
+  ctx.fillText('Spin', canvasOrigin.x, canvasOrigin.y)
 }
 
 function getWinRotation(winningIndex: number): number {
-  let returnValue = -Math.PI/2 - Math.PI/props.options.length - (winningIndex % props.options.length)*(2*Math.PI/props.options.length);
-  while (returnValue < 0) {
-    returnValue += 2*Math.PI;
-  }
-  return returnValue;
+  let returnValue = -Math.PI / 2 - Math.PI / props.options.length - (winningIndex % props.options.length) * (2 * Math.PI / props.options.length)
+  while (returnValue < 0)
+    returnValue += 2 * Math.PI
+
+  return returnValue
 }
 
 // https://stackoverflow.com/a/66902484
 function linspace(start: number, stop: number, num: number, endpoint = true): number[] {
-  const div = endpoint ? (num - 1) : num;
-  const step = (stop - start) / div;
-  return Array.from({length: num}, (_, i) => start + step * i);
+  const div = endpoint ? (num - 1) : num
+  const step = (stop - start) / div
+  return Array.from({ length: num }, (_, i) => start + step * i)
 }
 
 // 500 Frames ~= 7.5 seconds
 function getRotationFrames(winningIndex: number): number[] {
-  const resultArray: number[] = [];
+  const resultArray: number[] = []
 
   // // For the first 250 frames, just spin at really fast speeds
-  let stepNumPerFullRotation = 10;
-  let step = 2*Math.PI/stepNumPerFullRotation;
+  let stepNumPerFullRotation = 10
+  let step = 2 * Math.PI / stepNumPerFullRotation
 
-  for (let i = 1; i <= stepNumPerFullRotation*20; i++) {
-    resultArray.push(i*step);
-  }
+  for (let i = 1; i <= stepNumPerFullRotation * 20; i++)
+    resultArray.push(i * step)
 
   // Taper off
-  stepNumPerFullRotation = 25;
-  step = 2*Math.PI/stepNumPerFullRotation;
+  stepNumPerFullRotation = 25
+  step = 2 * Math.PI / stepNumPerFullRotation
 
-  for (let i = 1; i <= stepNumPerFullRotation*4; i++) {
-    resultArray.push(i*step);
-  }
+  for (let i = 1; i <= stepNumPerFullRotation * 4; i++)
+    resultArray.push(i * step)
 
   // Land on the winningIndex
-  resultArray.push(...linspace(0, getWinRotation(winningIndex), 200));
+  resultArray.push(...linspace(0, getWinRotation(winningIndex), 200))
 
-  return resultArray;
+  return resultArray
 }
 
 function animateWheel(ctx: CanvasRenderingContext2D, rotations: number[]): Promise<void> {
   return new Promise<void>((resolve) => {
-    let rotationIndex = 0;
+    let rotationIndex = 0
 
     const frame = () => {
       if (rotationIndex < rotations.length) {
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-        drawWheel(ctx, rotations[rotationIndex]);
-        rotationIndex += 1;
-        setTimeout(frame, 16.67);
-      } else {
-        resolve();
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight)
+        drawWheel(ctx, rotations[rotationIndex])
+        rotationIndex += 1
+        setTimeout(frame, 16.67)
+      }
+      else {
+        resolve()
       }
     }
 
-    frame();
-  });
+    frame()
+  })
 }
 
 function handleMouseClickOnSpin(ctx: CanvasRenderingContext2D) {
   if (!isWheelSpinning && props.options.length > 0) {
-    isWheelSpinning = true;
-    const winningIndex = Math.floor(Math.random() * props.options.length);
-    const rotations = getRotationFrames(winningIndex);
+    isWheelSpinning = true
+    const winningIndex = Math.floor(Math.random() * props.options.length)
+    const rotations = getRotationFrames(winningIndex)
 
-    animateWheel(ctx, rotations).then(() => isWheelSpinning = false);
+    animateWheel(ctx, rotations).then(() => isWheelSpinning = false)
   }
 }
 
 onMounted(() => {
-  const ctx = canvasRef.value?.getContext('2d');
+  const ctx = canvasRef.value?.getContext('2d')
 
   if (ctx) {
     canvasOrigin = {
-      x: canvasWidth/2,
-      y: canvasHeight/2
+      x: canvasWidth / 2,
+      y: canvasHeight / 2,
     }
 
     // Start the wheel on a random rotation
-    drawWheel(ctx, Math.random()*2*Math.PI);
+    drawWheel(ctx, Math.random() * 2 * Math.PI)
 
-    canvasRef.value?.addEventListener('mousedown', (e) => {
-      handleMouseClickOnSpin(ctx);
-    });
-  } else {
-    console.error('Canvas context is null or undefined');
+    canvasRef.value?.addEventListener('mousedown', () => {
+      handleMouseClickOnSpin(ctx)
+    })
   }
-});
+  else {
+    console.error('Canvas context is null or undefined')
+  }
+})
 </script>
 
 <template>
-  <div class='spinnyWheel'>
+  <div class="spinnyWheel">
     <canvas
-      ref='canvasRef'
-      :width='canvasWidth'
-      :height='canvasHeight'
-      tabindex='0'
-      style='border: 1px solid black;'
+      ref="canvasRef"
+      :width="canvasWidth"
+      :height="canvasHeight"
+      tabindex="0"
+      style="border: 1px solid black;"
     />
   </div>
 </template>
