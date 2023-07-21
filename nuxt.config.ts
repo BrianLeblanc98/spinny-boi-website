@@ -3,11 +3,11 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   app: {
     head: {
-      title: 'Spinny Boi'
-    }
+      title: 'Spinny Boi',
+    },
   },
   modules: [
-    '@pinia/nuxt'
+    '@pinia/nuxt',
   ],
   pinia: {
     autoImports: [
@@ -19,12 +19,12 @@ export default defineNuxtConfig({
   css: [
     '~/assets/css/main.css',
     '@fortawesome/fontawesome-svg-core/styles.css',
-    'vue-final-modal/style.css'
+    'vue-final-modal/style.css',
   ],
   build: {
     transpile: [
-      '@fortawesome/vue-fontawesome'
-    ]
+      '@fortawesome/vue-fontawesome',
+    ],
   },
   postcss: {
     plugins: {
@@ -41,7 +41,7 @@ export default defineNuxtConfig({
       fireBaseStorageBucket: process.env.NUXT_FIRE_BASE_STORAGE_BUCKET,
       fireBaseMessagingSenderId: process.env.NUXT_FIRE_BASE_MESSAGING_SENDER_ID,
       fireBaseappId: process.env.NUXT_FIRE_BASE_APP_ID,
-      fireBaseMeasurementId: process.env.NUXT_FIRE_BASE_MEASURMENT_ID
-    }
-  }
+      fireBaseMeasurementId: process.env.NUXT_FIRE_BASE_MEASURMENT_ID,
+    },
+  },
 })
