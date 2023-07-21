@@ -73,7 +73,7 @@ function openSetOwnedCars() {
       @closed="(modalReturn: modalReturn) => handleClosed(modalReturn)"
     />
 
-    <ul class="flex justify-between bg-pink-100 py-2 border-b-2 border-black">
+    <ul class="flex justify-between bg-pink-100 py-2 mb-2 border-b border-black">
       <li>
         <span href="#" class="py-1 px-4 text-lg font-semibold">
           Spinny Boi
