@@ -1,9 +1,9 @@
-function getOwnedNameArray(ownedInfo: ownedPackages): string[] {
+function getOwnedNameArray(ownedPackages: ownedPackages): string[] {
   const returnArray: string[] = []
 
-  Object.keys(ownedInfo).forEach((id) => {
-    if (ownedInfo[id].owned)
-      returnArray.push(ownedInfo[id].name)
+  Object.keys(ownedPackages).forEach((id) => {
+    if (ownedPackages[id].owned)
+      returnArray.push(ownedPackages[id].name)
   })
 
   return returnArray
