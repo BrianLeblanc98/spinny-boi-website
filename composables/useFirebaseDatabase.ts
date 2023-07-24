@@ -19,8 +19,8 @@ export default function () {
     onValue(ref($database, `/users/${userId}`), (snapshot) => {
       if (snapshot.val()) {
         // User is in database, pull their data into the store
-        userStore.carInfo = snapshot.val().carInfo
-        userStore.trackInfo = snapshot.val().trackInfo
+        userStore.ownedCars = snapshot.val().ownedCars
+        userStore.ownedTracks = snapshot.val().ownedTracks
       }
       else {
         // User is not yet in database, so we'll create an entry for them
@@ -29,8 +29,8 @@ export default function () {
           trackInfo: tempMockTracks,
         }).then(() => {
           // Once the database entry is created, we can safely update the store with the default values
-          userStore.carInfo = tempMockCars
-          userStore.trackInfo = tempMockTracks
+          userStore.ownedCars = tempMockCars
+          userStore.ownedTracks = tempMockTracks
         })
       }
     },
@@ -55,10 +55,10 @@ export default function () {
     const updates: any = {}
 
     if (saveCars)
-      updates[`/users/${userId}/carInfo`] = userStore.carInfo
+      updates[`/users/${userId}/carInfo`] = userStore.ownedCars
 
     if (saveTracks)
-      updates[`/users/${userId}/trackInfo`] = userStore.trackInfo
+      updates[`/users/${userId}/trackInfo`] = userStore.ownedTracks
 
     update(ref($database), updates)
   }
