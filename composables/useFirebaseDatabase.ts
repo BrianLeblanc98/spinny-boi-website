@@ -25,8 +25,8 @@ export default function () {
       else {
         // User is not yet in database, so we'll create an entry for them
         set(ref($database, `/users/${userId}`), {
-          carInfo: tempMockCars,
-          trackInfo: tempMockTracks,
+          ownedCars: tempMockCars,
+          ownedTracks: tempMockTracks,
         }).then(() => {
           // Once the database entry is created, we can safely update the store with the default values
           userStore.ownedCars = tempMockCars
