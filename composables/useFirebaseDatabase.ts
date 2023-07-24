@@ -55,10 +55,10 @@ export default function () {
     const updates: any = {}
 
     if (saveCars)
-      updates[`/users/${userId}/carInfo`] = userStore.ownedCars
+      updates[`/users/${userId}/ownedCars`] = userStore.ownedCars
 
     if (saveTracks)
-      updates[`/users/${userId}/trackInfo`] = userStore.ownedTracks
+      updates[`/users/${userId}/ownedTracks`] = userStore.ownedTracks
 
     update(ref($database), updates)
   }
