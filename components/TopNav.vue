@@ -4,7 +4,7 @@ import { useUserStore } from '@/stores/userStore'
 const modalShow = ref<boolean>(false)
 const modalTitle = ref<string>('')
 const modalType = ref<MODAL_TYPE>('')
-const modalOwnedInfo = ref<ownedInfo>({})
+const modalOwnedPackages = ref<ownedPackages>({})
 
 const { user, firebaseSignIn, firebaseSignOut } = useFirebaseAuth()
 const { saveUserStoreToDatabase } = useFirebaseDatabase()
@@ -34,11 +34,11 @@ function modalUpdateVisibility() {
 function handleClosed(modalReturn: modalReturn) {
   // TODO: Check if the data is actually changed before saving to the firebase database
   if (modalReturn.modalType === 'tracks') {
-    userStore.trackInfo = modalReturn.ownedInfo
+    userStore.ownedTracks = modalReturn.ownedPackages
     saveUserStoreToDatabase(true, false)
   }
   else if (modalReturn.modalType === 'cars') {
-    userStore.carInfo = modalReturn.ownedInfo
+    userStore.ownedCars = modalReturn.ownedPackages
     saveUserStoreToDatabase(false, true)
   }
   else {
@@ -46,29 +46,29 @@ function handleClosed(modalReturn: modalReturn) {
   }
 }
 
-function openModal(title: string, type: MODAL_TYPE, options: ownedInfo) {
+function openModal(title: string, type: MODAL_TYPE, ownedPackages: ownedPackages) {
   modalTitle.value = title
   modalType.value = type
-  modalOwnedInfo.value = options
+  modalOwnedPackages.value = ownedPackages
   modalShow.value = true
 }
 
 function openSetOwnedTracks() {
-  openModal('Set Owned Tracks', 'tracks', userStore.trackInfo)
+  openModal('Set Owned Tracks', 'tracks', userStore.ownedTracks)
 }
 
 function openSetOwnedCars() {
-  openModal('Set Owned Cars', 'cars', userStore.carInfo)
+  openModal('Set Owned Cars', 'cars', userStore.ownedCars)
 }
 </script>
 
 <template>
   <div>
-    <SelectOwnedInfoModal
+    <SelectOwnedPackagesModal
       v-model="modalShow"
       :title="modalTitle"
       :type="modalType"
-      :owned-info="modalOwnedInfo"
+      :owned-packages="modalOwnedPackages"
       @updatevisibility="() => modalUpdateVisibility()"
       @closed="(modalReturn: modalReturn) => handleClosed(modalReturn)"
     />
