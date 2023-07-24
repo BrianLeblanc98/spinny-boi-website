@@ -14,6 +14,20 @@ const emit = defineEmits<{
 
 const checkedPackageIds = ref<string[]>([])
 
+const sortedPackages = computed(() => {
+  const result = Object.keys(props.ownedPackages).sort((a, b) => {
+    if (props.ownedPackages[a].name > props.ownedPackages[b].name)
+      return 1
+
+    if (props.ownedPackages[a].name < props.ownedPackages[b].name)
+      return -1
+
+    return 0
+  })
+
+  return result
+})
+
 function handleOpened() {
   // When the modal is opened, populate checkedIds with previously selected options
   Object.keys(props.ownedPackages).forEach((packageId) => {
@@ -54,12 +68,12 @@ function handleClosed() {
 <template>
   <VueFinalModal
     class="flex justify-center items-center"
-    content-class="flex flex-col px-4 py-2 bg-white rounded border border-gray-100 max-h-[90%] w-100 overflow-auto"
+    content-class="flex flex-col px-4 pb-2 bg-white rounded border border-gray-100 max-h-[90%] w-100 overflow-auto"
     @update:model-value="val => emit(&quot;updatevisibility&quot;, val)"
     @opened="handleOpened"
     @closed="handleClosed"
   >
-    <div class="flex items-center mb-2 h-10 border-b border-black">
+    <div class="sticky top-0 z-50 bg-white flex items-center mb-2 pt-2 h-10 border-b border-black">
       <h1 v-if="title" class="text-2xl">
         {{ title }}
       </h1>
@@ -72,19 +86,19 @@ function handleClosed() {
 
     <ul>
       <li
-        v-for="(option, id) in ownedPackages"
-        :key="id"
+        v-for="packageId in sortedPackages"
+        :key="packageId"
         class="border-b border-slate-200"
       >
         <input
           v-model="checkedPackageIds"
           type="checkbox"
-          :checked="option.owned"
-          :value="id"
-          :disabled="option.free"
+          :checked="props.ownedPackages[packageId].owned"
+          :value="packageId"
+          :disabled="props.ownedPackages[packageId].free"
           class="mr-4 align-middle"
         >
-        <span> {{ option.name }} </span>
+        <span> {{ props.ownedPackages[packageId].name }} </span>
       </li>
     </ul>
   </VueFinalModal>
