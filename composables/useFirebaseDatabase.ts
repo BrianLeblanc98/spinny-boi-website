@@ -2,49 +2,6 @@ import { onValue, ref, set, update } from 'firebase/database'
 import { useIRacingDataStore } from '@/stores/iRacingDataStore'
 import { useUserStore } from '@/stores/userStore'
 
-function createInitalOwnedCarData(iRacingData: iRacingData): ownedPackages {
-  // Called when a new user signs in
-  // Create inital ownedPackages for cars to save to the user by using the iRacingDataStore
-  const initialOwnedCarData = {} as ownedPackages
-
-  Object.keys(iRacingData.carData).forEach((packageId) => {
-    const carIds = Object.keys(iRacingData.carData[packageId].cars)
-    // const temp = iRacingData.carData[packageId].cars[carIds[0]].name
-
-    initialOwnedCarData[packageId] = {
-      name: iRacingData.carData[packageId].cars[carIds[0]].name,
-      owned: false,
-    }
-
-    if (iRacingData.carData[packageId].free) {
-      initialOwnedCarData[packageId].owned = true
-      initialOwnedCarData[packageId].free = true
-    }
-  })
-
-  return initialOwnedCarData
-}
-
-function createInitalOwnedTrackData(iRacingData: iRacingData): ownedPackages {
-  // Called when a new user signs in
-  // Create inital ownedPackages for tracks to save to the user by using the iRacingDataStore
-  const initialOwnedTrackData = {} as ownedPackages
-
-  Object.keys(iRacingData.trackData).forEach((packageId) => {
-    initialOwnedTrackData[packageId] = {
-      name: iRacingData.trackData[packageId].name,
-      owned: false,
-    }
-
-    if (iRacingData.trackData[packageId].free) {
-      initialOwnedTrackData[packageId].owned = true
-      initialOwnedTrackData[packageId].free = true
-    }
-  })
-
-  return initialOwnedTrackData
-}
-
 export default function () {
   const { $auth, $database } = useNuxtApp()
   const iRacingDataStore = useIRacingDataStore()
@@ -77,14 +34,14 @@ export default function () {
       }
       else {
         // User is not yet in database (first sign on), create an entry for them
-        const initialOwnedCarData = createInitalOwnedCarData(iRacingDataStore.data)
-        const initialOwnedTrackData = createInitalOwnedTrackData(iRacingDataStore.data)
+        const initialOwnedCarData = iRacingDataStore.initialOwnedCarData
+        const initialOwnedTrackData = iRacingDataStore.initialOwnedTrackData
 
         set(ref($database, `/users/${userId}`), {
           ownedCars: initialOwnedCarData,
           ownedTracks: initialOwnedTrackData,
         }).then(() => {
-          // Once the database entry is created, we can safely update the store with the default values
+          // Once the database entry is created, we can safely update the user store with the initial values
           userStore.ownedCars = initialOwnedCarData
           userStore.ownedTracks = initialOwnedTrackData
         })
