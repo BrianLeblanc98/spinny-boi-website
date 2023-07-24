@@ -1,10 +1,10 @@
 <script setup lang='ts'>
 import { useUserStore } from '@/stores/userStore'
 
-const modalShow = ref<boolean>(false)
-const modalTitle = ref<string>('')
-const modalType = ref<MODAL_TYPE>('')
-const modalOwnedPackages = ref<ownedPackages>({})
+const setOwnedContentModalShow = ref<boolean>(false)
+const setOwnedContentModalTitle = ref<string>('')
+const setOwnedContentModalType = ref<SET_OWNED_CONTENT_MODAL_TYPE>('')
+const setOwnedContentModalOwnedPackages = ref<ownedPackages>({})
 
 const { user, firebaseSignIn, firebaseSignOut } = useFirebaseAuth()
 const { saveUserStoreToDatabase } = useFirebaseDatabase()
@@ -28,16 +28,16 @@ function signOut() {
 }
 
 function modalUpdateVisibility() {
-  modalShow.value = false
+  setOwnedContentModalShow.value = false
 }
 
-function handleClosed(modalReturn: modalReturn) {
+function handleClosed(modalReturn: setOwnedContentModalReturn) {
   // TODO: Check if the data is actually changed before saving to the firebase database
-  if (modalReturn.modalType === 'tracks') {
+  if (modalReturn.type === 'tracks') {
     userStore.ownedTracks = modalReturn.ownedPackages
     saveUserStoreToDatabase(true, false)
   }
-  else if (modalReturn.modalType === 'cars') {
+  else if (modalReturn.type === 'cars') {
     userStore.ownedCars = modalReturn.ownedPackages
     saveUserStoreToDatabase(false, true)
   }
@@ -46,31 +46,31 @@ function handleClosed(modalReturn: modalReturn) {
   }
 }
 
-function openModal(title: string, type: MODAL_TYPE, ownedPackages: ownedPackages) {
-  modalTitle.value = title
-  modalType.value = type
-  modalOwnedPackages.value = ownedPackages
-  modalShow.value = true
+function openSetOwnedContentModal(title: string, type: SET_OWNED_CONTENT_MODAL_TYPE, ownedPackages: ownedPackages) {
+  setOwnedContentModalTitle.value = title
+  setOwnedContentModalType.value = type
+  setOwnedContentModalOwnedPackages.value = ownedPackages
+  setOwnedContentModalShow.value = true
 }
 
 function openSetOwnedTracks() {
-  openModal('Set Owned Tracks', 'tracks', userStore.ownedTracks)
+  openSetOwnedContentModal('Set Owned Tracks', 'tracks', userStore.ownedTracks)
 }
 
 function openSetOwnedCars() {
-  openModal('Set Owned Cars', 'cars', userStore.ownedCars)
+  openSetOwnedContentModal('Set Owned Cars', 'cars', userStore.ownedCars)
 }
 </script>
 
 <template>
   <div>
-    <SelectOwnedPackagesModal
-      v-model="modalShow"
-      :title="modalTitle"
-      :type="modalType"
-      :owned-packages="modalOwnedPackages"
+    <SetOwnedPackagesModal
+      v-model="setOwnedContentModalShow"
+      :title="setOwnedContentModalTitle"
+      :type="setOwnedContentModalType"
+      :owned-packages="setOwnedContentModalOwnedPackages"
       @updatevisibility="() => modalUpdateVisibility()"
-      @closed="(modalReturn: modalReturn) => handleClosed(modalReturn)"
+      @closed="(setOwnedContentModalReturn: setOwnedContentModalReturn) => handleClosed(setOwnedContentModalReturn)"
     />
 
     <ul class="flex justify-between bg-pink-100 py-2 mb-2 border-b border-black">
@@ -84,6 +84,7 @@ function openSetOwnedCars() {
           <li class="py-1 px-2">
             <span
               class="text-sm text-stone-600"
+              @click="openSetOwnedTracks()"
             >
               Edit spin profiles
             </span>

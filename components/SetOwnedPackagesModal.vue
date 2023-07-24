@@ -3,13 +3,13 @@ import { VueFinalModal } from 'vue-final-modal'
 
 const props = defineProps<{
   title: string
-  type: MODAL_TYPE
+  type: SET_OWNED_CONTENT_MODAL_TYPE
   ownedPackages: ownedPackages
 }>()
 
 const emit = defineEmits<{
   (e: 'updatevisibility', modelValue: boolean): void
-  (e: 'closed', data: modalReturn): modalReturn
+  (e: 'closed', data: setOwnedContentModalReturn): setOwnedContentModalReturn
 }>()
 
 const checkedPackageIds = ref<string[]>([])
@@ -45,7 +45,7 @@ function handleClosed() {
 
   // Emit which store to update, and the information to update it with
   emit('closed', {
-    modalType: props.type,
+    type: props.type,
     ownedPackages: optionsToEmit,
   })
 }

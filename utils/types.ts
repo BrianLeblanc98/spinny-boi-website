@@ -31,9 +31,9 @@ interface iRacingData {
 
 // For whatever reason eslint thinks this isn't used. It might not notice the usage in .vue files
 // eslint-disable-next-line unused-imports/no-unused-vars
-interface modalReturn {
-  modalType: MODAL_TYPE
+interface setOwnedContentModalReturn {
+  type: SET_OWNED_CONTENT_MODAL_TYPE
   ownedPackages: ownedPackages
 }
 
-type MODAL_TYPE = '' | 'tracks' | 'cars'
+type SET_OWNED_CONTENT_MODAL_TYPE = '' | 'tracks' | 'cars'

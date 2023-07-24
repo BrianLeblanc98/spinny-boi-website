@@ -1,10 +1,12 @@
 import { onValue, ref, set, update } from 'firebase/database'
 import { tempMockCars, tempMockTracks } from '@/utils/tempMockData'
 import { useUserStore } from '@/stores/userStore'
+import { useIRacingDataStore } from '@/stores/iRacingDataStore'
 
 export default function () {
   const { $auth, $database } = useNuxtApp()
   const userStore = useUserStore()
+  const iRacingDataStore = useIRacingDataStore()
 
   function updateUserStoreWithDatabase() {
     // Updates the userStore with data from the firebase database
@@ -63,8 +65,18 @@ export default function () {
     update(ref($database), updates)
   }
 
+  function updateIRacingDataStoreWithDatabase() {
+    onValue(ref($database, '/iRacingData'), (snapshot) => {
+      iRacingDataStore.data = snapshot.val()
+    },
+    {
+      onlyOnce: true,
+    })
+  }
+
   return {
     updateUserStoreWithDatabase,
     saveUserStoreToDatabase,
+    updateIRacingDataStoreWithDatabase,
   }
 }
