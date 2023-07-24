@@ -3,50 +3,50 @@ import { VueFinalModal } from 'vue-final-modal'
 
 const props = defineProps<{
   title: string
-  type: MODAL_TYPE
-  ownedInfo: ownedInfo
+  type: SET_OWNED_CONTENT_MODAL_TYPE
+  ownedPackages: ownedPackages
 }>()
 
 const emit = defineEmits<{
   (e: 'updatevisibility', modelValue: boolean): void
-  (e: 'closed', data: modalReturn): modalReturn
+  (e: 'closed', data: setOwnedContentModalReturn): setOwnedContentModalReturn
 }>()
 
-const checkedIds = ref<string[]>([])
+const checkedPackageIds = ref<string[]>([])
 
 function handleOpened() {
   // When the modal is opened, populate checkedIds with previously selected options
-  Object.keys(props.ownedInfo).forEach((ownedInfoId) => {
-    if (props.ownedInfo[ownedInfoId].owned)
-      checkedIds.value.push(ownedInfoId)
+  Object.keys(props.ownedPackages).forEach((packageId) => {
+    if (props.ownedPackages[packageId].owned)
+      checkedPackageIds.value.push(packageId)
   })
 }
 
 function handleClosed() {
-  const optionsToEmit: ownedInfo = {}
+  const optionsToEmit: ownedPackages = {}
 
-  Object.keys(props.ownedInfo).forEach((optionId) => {
+  Object.keys(props.ownedPackages).forEach((optionId) => {
     const optionToEmit = {
-      name: props.ownedInfo[optionId].name,
+      name: props.ownedPackages[optionId].name,
       owned: false,
     }
 
-    if (checkedIds.value.includes(optionId))
+    if (checkedPackageIds.value.includes(optionId))
       optionToEmit.owned = true
 
-    if (props.ownedInfo[optionId].free)
+    if (props.ownedPackages[optionId].free)
       (optionToEmit as any).free = true
 
     optionsToEmit[optionId] = optionToEmit
   })
 
   // Clear the checkedIds otherwise they will be held over the next time the modal is opened
-  checkedIds.value = []
+  checkedPackageIds.value = []
 
   // Emit which store to update, and the information to update it with
   emit('closed', {
-    modalType: props.type,
-    ownedInfo: optionsToEmit,
+    type: props.type,
+    ownedPackages: optionsToEmit,
   })
 }
 </script>
@@ -72,12 +72,12 @@ function handleClosed() {
 
     <ul>
       <li
-        v-for="(option, id) in ownedInfo"
+        v-for="(option, id) in ownedPackages"
         :key="id"
         class="border-b border-slate-200"
       >
         <input
-          v-model="checkedIds"
+          v-model="checkedPackageIds"
           type="checkbox"
           :checked="option.owned"
           :value="id"

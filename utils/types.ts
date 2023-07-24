@@ -1,4 +1,4 @@
-interface ownedInfo {
+interface ownedPackages {
   [package_id: string]: {
     name: string
     owned: boolean
@@ -6,11 +6,34 @@ interface ownedInfo {
   }
 }
 
-// For whatever reason eslint thinks this isn't used. Nuxt auto imports might not be recognized by eslint
-// eslint-disable-next-line unused-imports/no-unused-vars
-interface modalReturn {
-  modalType: MODAL_TYPE
-  ownedInfo: ownedInfo
+interface iRacingData {
+  carData: {
+    [package_id: string]: {
+      cars: {
+        [car_id: string]: {
+          name: string
+        }
+      }
+    }
+  }
+  trackData: {
+    [package_id: string]: {
+      names: string
+      configs: {
+        [config_id: string]: {
+          name: string
+          type: string
+        }
+      }
+    }
+  }
 }
 
-type MODAL_TYPE = '' | 'tracks' | 'cars'
+// For whatever reason eslint thinks this isn't used. It might not notice the usage in .vue files
+// eslint-disable-next-line unused-imports/no-unused-vars
+interface setOwnedContentModalReturn {
+  type: SET_OWNED_CONTENT_MODAL_TYPE
+  ownedPackages: ownedPackages
+}
+
+type SET_OWNED_CONTENT_MODAL_TYPE = '' | 'tracks' | 'cars'

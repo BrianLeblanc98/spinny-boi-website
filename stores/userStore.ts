@@ -1,9 +1,9 @@
-function getOwnedNameArray(ownedInfo: ownedInfo): string[] {
+function getOwnedNameArray(ownedPackages: ownedPackages): string[] {
   const returnArray: string[] = []
 
-  Object.keys(ownedInfo).forEach((id) => {
-    if (ownedInfo[id].owned)
-      returnArray.push(ownedInfo[id].name)
+  Object.keys(ownedPackages).forEach((id) => {
+    if (ownedPackages[id].owned)
+      returnArray.push(ownedPackages[id].name)
   })
 
   return returnArray
@@ -11,21 +11,21 @@ function getOwnedNameArray(ownedInfo: ownedInfo): string[] {
 
 export const useUserStore = defineStore('user', {
   state: () => ({
-    carInfo: {} as ownedInfo,
-    trackInfo: {} as ownedInfo,
+    ownedCars: {} as ownedPackages,
+    ownedTracks: {} as ownedPackages,
   }),
   getters: {
     getOwnedCarNameArray(state): string[] {
-      return getOwnedNameArray(state.carInfo)
+      return getOwnedNameArray(state.ownedCars)
     },
     getOwnedTrackNameArray(state): string[] {
-      return getOwnedNameArray(state.trackInfo)
+      return getOwnedNameArray(state.ownedTracks)
     },
   },
   actions: {
     clear() {
-      this.carInfo = {}
-      this.trackInfo = {}
+      this.ownedCars = {}
+      this.ownedTracks = {}
     },
   },
 })

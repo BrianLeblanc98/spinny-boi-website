@@ -1,10 +1,12 @@
 import { onValue, ref, set, update } from 'firebase/database'
 import { tempMockCars, tempMockTracks } from '@/utils/tempMockData'
 import { useUserStore } from '@/stores/userStore'
+import { useIRacingDataStore } from '@/stores/iRacingDataStore'
 
 export default function () {
   const { $auth, $database } = useNuxtApp()
   const userStore = useUserStore()
+  const iRacingDataStore = useIRacingDataStore()
 
   function updateUserStoreWithDatabase() {
     // Updates the userStore with data from the firebase database
@@ -19,18 +21,18 @@ export default function () {
     onValue(ref($database, `/users/${userId}`), (snapshot) => {
       if (snapshot.val()) {
         // User is in database, pull their data into the store
-        userStore.carInfo = snapshot.val().carInfo
-        userStore.trackInfo = snapshot.val().trackInfo
+        userStore.ownedCars = snapshot.val().ownedCars
+        userStore.ownedTracks = snapshot.val().ownedTracks
       }
       else {
         // User is not yet in database, so we'll create an entry for them
         set(ref($database, `/users/${userId}`), {
-          carInfo: tempMockCars,
-          trackInfo: tempMockTracks,
+          ownedCars: tempMockCars,
+          ownedTracks: tempMockTracks,
         }).then(() => {
           // Once the database entry is created, we can safely update the store with the default values
-          userStore.carInfo = tempMockCars
-          userStore.trackInfo = tempMockTracks
+          userStore.ownedCars = tempMockCars
+          userStore.ownedTracks = tempMockTracks
         })
       }
     },
@@ -55,16 +57,26 @@ export default function () {
     const updates: any = {}
 
     if (saveCars)
-      updates[`/users/${userId}/carInfo`] = userStore.carInfo
+      updates[`/users/${userId}/ownedCars`] = userStore.ownedCars
 
     if (saveTracks)
-      updates[`/users/${userId}/trackInfo`] = userStore.trackInfo
+      updates[`/users/${userId}/ownedTracks`] = userStore.ownedTracks
 
     update(ref($database), updates)
+  }
+
+  function updateIRacingDataStoreWithDatabase() {
+    onValue(ref($database, '/iRacingData'), (snapshot) => {
+      iRacingDataStore.data = snapshot.val()
+    },
+    {
+      onlyOnce: true,
+    })
   }
 
   return {
     updateUserStoreWithDatabase,
     saveUserStoreToDatabase,
+    updateIRacingDataStoreWithDatabase,
   }
 }

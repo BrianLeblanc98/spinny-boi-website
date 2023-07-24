@@ -3,7 +3,7 @@
 // In the iRacing api, 'package_id' is unique per purchase, and is shared across layouts on tracks
 // So you can go through the full track result, and use 'package_id' to get all the layouts together
 // We only need one instance of it though for setting the owned content
-export const tempMockCars: ownedInfo = {
+export const tempMockCars: ownedPackages = {
   15: {
     name: 'Skip Barber Formula 2000',
     owned: false,
@@ -536,7 +536,7 @@ export const tempMockCars: ownedInfo = {
   },
 }
 
-export const tempMockTracks: ownedInfo = {
+export const tempMockTracks: ownedPackages = {
   3: {
     name: 'Concord Speedway',
     owned: true,
