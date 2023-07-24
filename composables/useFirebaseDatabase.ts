@@ -1,12 +1,64 @@
 import { onValue, ref, set, update } from 'firebase/database'
-import { tempMockCars, tempMockTracks } from '@/utils/tempMockData'
-import { useUserStore } from '@/stores/userStore'
 import { useIRacingDataStore } from '@/stores/iRacingDataStore'
+import { useUserStore } from '@/stores/userStore'
+
+function createInitalOwnedCarData(iRacingData: iRacingData): ownedPackages {
+  // Called when a new user signs in
+  // Create inital ownedPackages for cars to save to the user by using the iRacingDataStore
+  const initialOwnedCarData = {} as ownedPackages
+
+  Object.keys(iRacingData.carData).forEach((packageId) => {
+    const carIds = Object.keys(iRacingData.carData[packageId].cars)
+    // const temp = iRacingData.carData[packageId].cars[carIds[0]].name
+
+    initialOwnedCarData[packageId] = {
+      name: iRacingData.carData[packageId].cars[carIds[0]].name,
+      owned: false,
+    }
+
+    if (iRacingData.carData[packageId].free) {
+      initialOwnedCarData[packageId].owned = true
+      initialOwnedCarData[packageId].free = true
+    }
+  })
+
+  return initialOwnedCarData
+}
+
+function createInitalOwnedTrackData(iRacingData: iRacingData): ownedPackages {
+  // Called when a new user signs in
+  // Create inital ownedPackages for tracks to save to the user by using the iRacingDataStore
+  const initialOwnedTrackData = {} as ownedPackages
+
+  Object.keys(iRacingData.trackData).forEach((packageId) => {
+    initialOwnedTrackData[packageId] = {
+      name: iRacingData.trackData[packageId].name,
+      owned: false,
+    }
+
+    if (iRacingData.trackData[packageId].free) {
+      initialOwnedTrackData[packageId].owned = true
+      initialOwnedTrackData[packageId].free = true
+    }
+  })
+
+  return initialOwnedTrackData
+}
 
 export default function () {
   const { $auth, $database } = useNuxtApp()
-  const userStore = useUserStore()
   const iRacingDataStore = useIRacingDataStore()
+  const userStore = useUserStore()
+
+  function updateIRacingDataStoreWithDatabase() {
+    // This gets run when the app is mounted
+    onValue(ref($database, '/iRacingData'), (snapshot) => {
+      iRacingDataStore.data = snapshot.val()
+    },
+    {
+      onlyOnce: true,
+    })
+  }
 
   function updateUserStoreWithDatabase() {
     // Updates the userStore with data from the firebase database
@@ -17,7 +69,6 @@ export default function () {
 
     const userId = $auth.currentUser.uid
 
-    // If the user does not exist (first sign on), create an entry for them
     onValue(ref($database, `/users/${userId}`), (snapshot) => {
       if (snapshot.val()) {
         // User is in database, pull their data into the store
@@ -25,14 +76,17 @@ export default function () {
         userStore.ownedTracks = snapshot.val().ownedTracks
       }
       else {
-        // User is not yet in database, so we'll create an entry for them
+        // User is not yet in database (first sign on), create an entry for them
+        const initialOwnedCarData = createInitalOwnedCarData(iRacingDataStore.data)
+        const initialOwnedTrackData = createInitalOwnedTrackData(iRacingDataStore.data)
+
         set(ref($database, `/users/${userId}`), {
-          ownedCars: tempMockCars,
-          ownedTracks: tempMockTracks,
+          ownedCars: initialOwnedCarData,
+          ownedTracks: initialOwnedTrackData,
         }).then(() => {
           // Once the database entry is created, we can safely update the store with the default values
-          userStore.ownedCars = tempMockCars
-          userStore.ownedTracks = tempMockTracks
+          userStore.ownedCars = initialOwnedCarData
+          userStore.ownedTracks = initialOwnedTrackData
         })
       }
     },
@@ -65,18 +119,9 @@ export default function () {
     update(ref($database), updates)
   }
 
-  function updateIRacingDataStoreWithDatabase() {
-    onValue(ref($database, '/iRacingData'), (snapshot) => {
-      iRacingDataStore.data = snapshot.val()
-    },
-    {
-      onlyOnce: true,
-    })
-  }
-
   return {
+    updateIRacingDataStoreWithDatabase,
     updateUserStoreWithDatabase,
     saveUserStoreToDatabase,
-    updateIRacingDataStoreWithDatabase,
   }
 }

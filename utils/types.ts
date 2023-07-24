@@ -9,6 +9,7 @@ interface ownedPackages {
 interface iRacingData {
   carData: {
     [package_id: string]: {
+      free?: boolean
       cars: {
         [car_id: string]: {
           name: string
@@ -18,7 +19,8 @@ interface iRacingData {
   }
   trackData: {
     [package_id: string]: {
-      names: string
+      name: string
+      free?: boolean
       configs: {
         [config_id: string]: {
           name: string
