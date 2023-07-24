@@ -31,6 +31,17 @@ interface iRacingData {
   }
 }
 
+interface spinOption {
+  name: string
+  weight?: number // TODO: Add ui to change the weight
+}
+
+interface spinProfile {
+  name: string
+  type: string // TODO: Will be used to filter between cars/tracks/time/weather profiles
+  options: spinOption[]
+}
+
 // For whatever reason eslint thinks this isn't used. It might not notice the usage in .vue files
 // eslint-disable-next-line unused-imports/no-unused-vars
 interface setOwnedContentModalReturn {

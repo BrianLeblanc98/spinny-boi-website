@@ -3,9 +3,47 @@ import { ModalsContainer } from 'vue-final-modal'
 import { useUserStore } from '@/stores/userStore'
 
 const userStore = useUserStore()
-
+userStore.spinProfiles = [
+  {
+    name: 'Profile 1 - Tracks',
+    type: 'tracks',
+    options: [
+      {
+        name: 'Track 1',
+      },
+      {
+        name: 'Track 2',
+      },
+      {
+        name: 'Track 3',
+      },
+      {
+        name: 'Track 4',
+      },
+      {
+        name: 'Track 5',
+      },
+    ],
+  },
+  {
+    name: 'Profile 2 - Cars',
+    type: 'cars',
+    options: [
+      {
+        name: 'Car 1',
+      },
+      {
+        name: 'Car 2',
+      },
+      {
+        name: 'Car 3',
+      },
+    ],
+  },
+]
 const { updateIRacingDataStoreWithDatabase } = useFirebaseDatabase()
 
+const selectedProfileIndex = ref<number>(0)
 onMounted(() => {
   updateIRacingDataStoreWithDatabase()
 })
@@ -14,13 +52,20 @@ onMounted(() => {
 <template>
   <ClientOnly>
     <TopNav class="sticky top-0 z-50" />
+    <select v-model="selectedProfileIndex">
+      <option disabled value="">
+        Select your spin profile
+      </option>
+      <option value="0">
+        {{ userStore.spinProfiles[0].name }}
+      </option>
+      <option value="1">
+        {{ userStore.spinProfiles[1].name }}
+      </option>
+    </select>
     <SpinnyWheel
-      :options="userStore.getOwnedTrackNameArray"
+      :profile="userStore.spinProfiles[selectedProfileIndex]"
     />
-    <SpinnyWheel
-      :options="userStore.getOwnedCarNameArray"
-    />
-
     <ModalsContainer />
   </ClientOnly>
 </template>

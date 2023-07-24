@@ -1,17 +1,17 @@
 <script setup lang='ts'>
 const props = defineProps<{
-  options: string[]
+  profile: spinProfile
 }>()
 
 const canvasRef = ref<HTMLCanvasElement | null>(null)
-const canvasWidth = 900
-const canvasHeight = 900
+const canvasWidth = 800
+const canvasHeight = 800
 let canvasOrigin = { x: 0, y: 0 }
-const wheelRadius = 450
+const wheelRadius = 380
 let isWheelSpinning = false
 
 onUpdated(() => {
-  // When props are changed, i.e. when owned tracks changes, re-draw the wheel
+  // When props are changed, i.e. when the spin profile changes, re-draw the wheel
   const ctx = canvasRef.value?.getContext('2d')
   if (ctx) {
     ctx.clearRect(0, 0, canvasWidth, canvasHeight)
@@ -28,8 +28,8 @@ function drawWheel(ctx: CanvasRenderingContext2D, rotation: number = 0) {
   ctx.stroke()
 
   // Create each slice
-  props.options.forEach((optionName, i) => {
-    const turnAmount = (2 * Math.PI / props.options.length)
+  props.profile.options.forEach((option, i) => {
+    const turnAmount = (2 * Math.PI / props.profile.options.length)
     const startAngle = i * turnAmount
     const endAngle = startAngle + turnAmount
 
@@ -47,7 +47,7 @@ function drawWheel(ctx: CanvasRenderingContext2D, rotation: number = 0) {
     let color = ''
 
     // TODO: Come up with a way to guarentee no side by side colors
-    if (props.options.length % 2 === 0) {
+    if (props.profile.options.length % 2 === 0) {
       // Color scheme when it's an even number
       color = i % 2 === 0 ? 'red' : 'orange'
     }
@@ -74,7 +74,7 @@ function drawWheel(ctx: CanvasRenderingContext2D, rotation: number = 0) {
     ctx.fillStyle = 'black'
 
     // TODO: Find a better way to define x
-    ctx.fillText(optionName, wheelRadius / 4, 0)
+    ctx.fillText(option.name, wheelRadius / 4, 0)
     ctx.restore()
   })
 
@@ -101,7 +101,7 @@ function drawWheel(ctx: CanvasRenderingContext2D, rotation: number = 0) {
 }
 
 function getWinRotation(winningIndex: number): number {
-  let returnValue = -Math.PI / 2 - Math.PI / props.options.length - (winningIndex % props.options.length) * (2 * Math.PI / props.options.length)
+  let returnValue = -Math.PI / 2 - Math.PI / props.profile.options.length - (winningIndex % props.profile.options.length) * (2 * Math.PI / props.profile.options.length)
   while (returnValue < 0)
     returnValue += 2 * Math.PI
 
@@ -160,9 +160,9 @@ function animateWheel(ctx: CanvasRenderingContext2D, rotations: number[]): Promi
 }
 
 function handleMouseClickOnSpin(ctx: CanvasRenderingContext2D) {
-  if (!isWheelSpinning && props.options.length > 0) {
+  if (!isWheelSpinning && props.profile.options.length > 0) {
     isWheelSpinning = true
-    const winningIndex = Math.floor(Math.random() * props.options.length)
+    const winningIndex = Math.floor(Math.random() * props.profile.options.length)
     const rotations = getRotationFrames(winningIndex)
 
     animateWheel(ctx, rotations).then(() => isWheelSpinning = false)
@@ -198,7 +198,6 @@ onMounted(() => {
       :width="canvasWidth"
       :height="canvasHeight"
       tabindex="0"
-      style="border: 1px solid black;"
     />
   </div>
 </template>

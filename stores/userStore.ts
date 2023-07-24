@@ -13,6 +13,7 @@ export const useUserStore = defineStore('user', {
   state: () => ({
     ownedCars: {} as ownedPackages,
     ownedTracks: {} as ownedPackages,
+    spinProfiles: [] as spinProfile[],
   }),
   getters: {
     getOwnedCarNameArray(state): string[] {
