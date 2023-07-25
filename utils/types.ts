@@ -1,3 +1,6 @@
+// ESLint doesn't seem to work well with nuxt auto-imports
+/* eslint unused-imports/no-unused-vars: 0 */
+
 interface packageData {
   name: string
   owned: boolean
@@ -44,8 +47,6 @@ interface spinProfile {
   options: spinOption[]
 }
 
-// For whatever reason eslint thinks this isn't used. It might not notice the usage in .vue files
-// eslint-disable-next-line unused-imports/no-unused-vars
 interface setOwnedContentModalReturn {
   type: SET_OWNED_CONTENT_MODAL_TYPE
   ownedPackages: ownedPackages
