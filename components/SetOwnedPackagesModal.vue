@@ -8,7 +8,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'updatevisibility', modelValue: boolean): void
+  (e: 'update:modelValue', modelValue: boolean): void
   (e: 'closed', data: setOwnedContentModalReturn): setOwnedContentModalReturn
 }>()
 
@@ -69,7 +69,7 @@ function handleClosed() {
   <VueFinalModal
     class="flex justify-center items-center"
     content-class="flex flex-col px-4 pb-2 bg-white rounded border border-gray-100 max-h-[90%] w-100 overflow-auto"
-    @update:model-value="val => emit(&quot;updatevisibility&quot;, val)"
+    @update:model-value="val => emit('update:modelValue', val)"
     @opened="handleOpened"
     @closed="handleClosed"
   >
@@ -78,7 +78,7 @@ function handleClosed() {
         {{ title }}
       </h1>
       <ClientOnly>
-        <button class="ml-auto" @click="emit(&quot;updatevisibility&quot;, false)">
+        <button class="ml-auto" @click="emit('update:modelValue', false)">
           <font-awesome-icon icon="fa-solid fa-xmark" size="2xl" />
         </button>
       </ClientOnly>

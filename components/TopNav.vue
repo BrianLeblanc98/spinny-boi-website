@@ -27,11 +27,7 @@ function signOut() {
   })
 }
 
-function modalUpdateVisibility() {
-  setOwnedContentModalShow.value = false
-}
-
-function handleClosed(modalReturn: setOwnedContentModalReturn) {
+function handleSetOwnedContentModalClosed(modalReturn: setOwnedContentModalReturn) {
   // TODO: Check if the data is actually changed before saving to the firebase database
   if (modalReturn.type === 'tracks') {
     userStore.ownedTracks = modalReturn.ownedPackages
@@ -69,8 +65,7 @@ function openSetOwnedCars() {
       :title="setOwnedContentModalTitle"
       :type="setOwnedContentModalType"
       :owned-packages="setOwnedContentModalOwnedPackages"
-      @updatevisibility="() => modalUpdateVisibility()"
-      @closed="(setOwnedContentModalReturn: setOwnedContentModalReturn) => handleClosed(setOwnedContentModalReturn)"
+      @closed="(setOwnedContentModalReturn: setOwnedContentModalReturn) => handleSetOwnedContentModalClosed(setOwnedContentModalReturn)"
     />
 
     <ul class="flex justify-between bg-pink-100 py-2 mb-2 border-b border-black">
