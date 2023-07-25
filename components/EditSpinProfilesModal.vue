@@ -38,18 +38,38 @@ function handleClosed() {}
         <li
           v-for="profile in userStore.spinProfiles"
           :key="profile.name"
+          class="border-b border-slate-200 pb-2"
         >
-          {{ profile.name }}
-          <ul>
-            <li
-              v-for="option in profile.options"
-              :key="option.name"
-            >
-              {{ option.name }}
-            </li>
-          </ul>
+          <div class="flex items-center">
+            <span>{{ profile.name }}</span>
+            <button class="ml-auto">
+              <font-awesome-icon icon="fa-solid fa-trash" />
+            </button>
+          </div>
+          <div class="pl-4">
+            <ul>
+              <li
+                v-for="option in profile.options"
+                :key="option.name"
+              >
+                <button>
+                  <font-awesome-icon icon="fa-solid fa-xmark" />
+                </button>
+                <span class="pl-1">{{ option.name }}</span>
+              </li>
+            </ul>
+            <button class="text-blue-500 hover:text-blue-800 cursor-pointer">
+              <font-awesome-icon icon="fa-solid fa-plus" />
+              <span class="pl-1">Add option</span>
+            </button>
+          </div>
         </li>
       </ul>
+
+      <button class="text-blue-500 hover:text-blue-800 cursor-pointer">
+        <font-awesome-icon icon="fa-solid fa-plus" />
+        <span class="pl-1">Create new Spin Profile</span>
+      </button>
     </div>
   </VueFinalModal>
 </template>
