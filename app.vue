@@ -40,6 +40,96 @@ userStore.spinProfiles = [
       },
     ],
   },
+  {
+    name: 'Profile X - FILLER',
+    type: 'track',
+    options: [
+      {
+        name: 'FILLER FILLER FILLER FILLER FILLER FILLER',
+      },
+      {
+        name: 'FILLER FILLER FILLER FILLER FILLER FILLER',
+      },
+      {
+        name: 'FILLER FILLER FILLER FILLER FILLER FILLER',
+      },
+    ],
+  },
+  {
+    name: 'Profile X - FILLER',
+    type: 'track',
+    options: [
+      {
+        name: 'FILLER FILLER FILLER FILLER FILLER FILLER',
+      },
+      {
+        name: 'FILLER FILLER FILLER FILLER FILLER FILLER',
+      },
+      {
+        name: 'FILLER FILLER FILLER FILLER FILLER FILLER',
+      },
+    ],
+  },
+  {
+    name: 'Profile X - FILLER',
+    type: 'track',
+    options: [
+      {
+        name: 'FILLER FILLER FILLER FILLER FILLER FILLER',
+      },
+      {
+        name: 'FILLER FILLER FILLER FILLER FILLER FILLER',
+      },
+      {
+        name: 'FILLER FILLER FILLER FILLER FILLER FILLER',
+      },
+    ],
+  },
+  {
+    name: 'Profile X - FILLER',
+    type: 'track',
+    options: [
+      {
+        name: 'FILLER FILLER FILLER FILLER FILLER FILLER',
+      },
+      {
+        name: 'FILLER FILLER FILLER FILLER FILLER FILLER',
+      },
+      {
+        name: 'FILLER FILLER FILLER FILLER FILLER FILLER',
+      },
+    ],
+  },
+  {
+    name: 'Profile X - FILLER',
+    type: 'track',
+    options: [
+      {
+        name: 'FILLER FILLER FILLER FILLER FILLER FILLER',
+      },
+      {
+        name: 'FILLER FILLER FILLER FILLER FILLER FILLER',
+      },
+      {
+        name: 'FILLER FILLER FILLER FILLER FILLER FILLER',
+      },
+    ],
+  },
+  {
+    name: 'Profile X - FILLER',
+    type: 'track',
+    options: [
+      {
+        name: 'FILLER FILLER FILLER FILLER FILLER FILLER',
+      },
+      {
+        name: 'FILLER FILLER FILLER FILLER FILLER FILLER',
+      },
+      {
+        name: 'FILLER FILLER FILLER FILLER FILLER FILLER',
+      },
+    ],
+  },
 ]
 const { updateIRacingDataStoreWithDatabase } = useFirebaseDatabase()
 
@@ -56,11 +146,12 @@ onMounted(() => {
       <option disabled value="">
         Select your spin profile
       </option>
-      <option value="0">
-        {{ userStore.spinProfiles[0].name }}
-      </option>
-      <option value="1">
-        {{ userStore.spinProfiles[1].name }}
+      <option
+        v-for="(profile, index) in userStore.spinProfiles"
+        :key="profile.name"
+        :value="index"
+      >
+        {{ userStore.spinProfiles[index].name }}
       </option>
     </select>
     <SpinnyWheel
