@@ -1,17 +1,30 @@
 <script setup lang='ts'>
+import { storeToRefs } from 'pinia'
+import { useUserStore } from '@/stores/userStore'
+
 const props = defineProps<{
-  options: string[]
+  profileId: uuid
 }>()
 
+const userStore = useUserStore()
+const { spinProfiles } = storeToRefs(userStore)
+
+const spinOptions = computed(() => {
+  if (!spinProfiles.value[props.profileId]?.options)
+    return []
+  else
+    return Object.values(spinProfiles.value[props.profileId].options)
+})
+
 const canvasRef = ref<HTMLCanvasElement | null>(null)
-const canvasWidth = 900
-const canvasHeight = 900
+const canvasWidth = 800
+const canvasHeight = 800
 let canvasOrigin = { x: 0, y: 0 }
-const wheelRadius = 450
+const wheelRadius = 380
 let isWheelSpinning = false
 
 onUpdated(() => {
-  // When props are changed, i.e. when owned tracks changes, re-draw the wheel
+  // When props are changed, i.e. when the spin profile id changes, re-draw the wheel
   const ctx = canvasRef.value?.getContext('2d')
   if (ctx) {
     ctx.clearRect(0, 0, canvasWidth, canvasHeight)
@@ -28,55 +41,57 @@ function drawWheel(ctx: CanvasRenderingContext2D, rotation: number = 0) {
   ctx.stroke()
 
   // Create each slice
-  props.options.forEach((optionName, i) => {
-    const turnAmount = (2 * Math.PI / props.options.length)
-    const startAngle = i * turnAmount
-    const endAngle = startAngle + turnAmount
+  if (spinOptions.value) {
+    spinOptions.value.forEach((option, i) => {
+      const turnAmount = (2 * Math.PI / spinOptions.value.length)
+      const startAngle = i * turnAmount
+      const endAngle = startAngle + turnAmount
 
-    // Create the colored slice
-    ctx.beginPath()
-    ctx.moveTo(canvasOrigin.x, canvasOrigin.y)
-    ctx.arc(
-      canvasOrigin.x,
-      canvasOrigin.y,
-      wheelRadius,
-      startAngle + rotation,
-      endAngle + rotation,
-    )
+      // Create the colored slice
+      ctx.beginPath()
+      ctx.moveTo(canvasOrigin.x, canvasOrigin.y)
+      ctx.arc(
+        canvasOrigin.x,
+        canvasOrigin.y,
+        wheelRadius,
+        startAngle + rotation,
+        endAngle + rotation,
+      )
 
-    let color = ''
+      let color = ''
 
-    // TODO: Come up with a way to guarentee no side by side colors
-    if (props.options.length % 2 === 0) {
-      // Color scheme when it's an even number
-      color = i % 2 === 0 ? 'red' : 'orange'
-    }
-    else {
-      // Color scheme when it's a multiple of 3
-      if (i % 3 === 0)
-        color = 'red'
-      else if (i % 3 === 1)
-        color = 'orange'
-      else
-        color = 'white'
-    }
+      // TODO: Come up with a way to guarantee no side by side colors
+      if (spinOptions.value.length % 2 === 0) {
+        // Color scheme when it's an even number
+        color = i % 2 === 0 ? 'red' : 'orange'
+      }
+      else {
+        // Color scheme when it's a multiple of 3
+        if (i % 3 === 0)
+          color = 'red'
+        else if (i % 3 === 1)
+          color = 'orange'
+        else
+          color = 'white'
+      }
 
-    ctx.fillStyle = color
-    ctx.fill()
+      ctx.fillStyle = color
+      ctx.fill()
 
-    // Add the text on top
-    ctx.save()
-    ctx.translate(canvasOrigin.x, canvasOrigin.y)
-    ctx.rotate(startAngle + turnAmount / 2 + rotation)
-    ctx.font = '15px Comic Sans MS'
-    ctx.textAlign = 'left'
-    ctx.textBaseline = 'middle'
-    ctx.fillStyle = 'black'
+      // Add the text on top
+      ctx.save()
+      ctx.translate(canvasOrigin.x, canvasOrigin.y)
+      ctx.rotate(startAngle + turnAmount / 2 + rotation)
+      ctx.font = '15px Comic Sans MS'
+      ctx.textAlign = 'left'
+      ctx.textBaseline = 'middle'
+      ctx.fillStyle = 'black'
 
-    // TODO: Find a better way to define x
-    ctx.fillText(optionName, wheelRadius / 4, 0)
-    ctx.restore()
-  })
+      // TODO: Find a better way to define x
+      ctx.fillText(option.name, wheelRadius / 4, 0)
+      ctx.restore()
+    })
+  }
 
   // Create the center spin button
   // Center circle
@@ -101,7 +116,7 @@ function drawWheel(ctx: CanvasRenderingContext2D, rotation: number = 0) {
 }
 
 function getWinRotation(winningIndex: number): number {
-  let returnValue = -Math.PI / 2 - Math.PI / props.options.length - (winningIndex % props.options.length) * (2 * Math.PI / props.options.length)
+  let returnValue = -Math.PI / 2 - Math.PI / spinOptions.value.length - (winningIndex % spinOptions.value.length) * (2 * Math.PI / spinOptions.value.length)
   while (returnValue < 0)
     returnValue += 2 * Math.PI
 
@@ -160,12 +175,16 @@ function animateWheel(ctx: CanvasRenderingContext2D, rotations: number[]): Promi
 }
 
 function handleMouseClickOnSpin(ctx: CanvasRenderingContext2D) {
-  if (!isWheelSpinning && props.options.length > 0) {
+  if (!isWheelSpinning && spinOptions.value.length > 0) {
     isWheelSpinning = true
-    const winningIndex = Math.floor(Math.random() * props.options.length)
+    const winningIndex = Math.floor(Math.random() * spinOptions.value.length)
     const rotations = getRotationFrames(winningIndex)
 
-    animateWheel(ctx, rotations).then(() => isWheelSpinning = false)
+    animateWheel(ctx, rotations).then(() => {
+      // TODO: Make this not an alert
+      alert(spinOptions.value[winningIndex].name)
+      isWheelSpinning = false
+    })
   }
 }
 
@@ -192,13 +211,25 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="spinnyWheel">
+  <div>
+    <span v-if="profileId === EMPTY_UUID">No spin profile selected</span>
+    <span v-if="profileId !== EMPTY_UUID && spinOptions.length === 0">Spin profile has no options!</span>
+
     <canvas
       ref="canvasRef"
       :width="canvasWidth"
       :height="canvasHeight"
       tabindex="0"
-      style="border: 1px solid black;"
     />
+
+    <!-- TODO: This is needed for the canvas to be reactive to profile changes. Find a better way to do this -->
+    <ul>
+      <li
+        v-for="(option, index) in spinOptions"
+        :key="index"
+      >
+        {{ option.name }}
+      </li>
+    </ul>
   </div>
 </template>

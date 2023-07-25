@@ -1,41 +1,70 @@
+// ESLint doesn't seem to work well with nuxt auto-imports
+/* eslint unused-imports/no-unused-vars: 0 */
+type setOwnedContentModalType = '' | 'tracks' | 'cars'
+type spinProfileType = '' | 'tracks' | 'cars'
+type uuid = `${string}-${string}-${string}-${string}-${string}`
+
+interface packageData {
+  name: string
+  owned: boolean
+  free?: boolean
+}
+
 interface ownedPackages {
-  [package_id: string]: {
-    name: string
-    owned: boolean
-    free?: boolean
-  }
+  [packageId: string]: packageData
 }
 
-interface iRacingData {
-  carData: {
-    [package_id: string]: {
-      free?: boolean
-      cars: {
-        [car_id: string]: {
-          name: string
-        }
-      }
-    }
-  }
-  trackData: {
-    [package_id: string]: {
+interface carWithVariants {
+  free?: boolean
+  cars: {
+    [carId: string]: {
       name: string
-      free?: boolean
-      configs: {
-        [config_id: string]: {
-          name: string
-          type: string
-        }
-      }
     }
   }
 }
 
-// For whatever reason eslint thinks this isn't used. It might not notice the usage in .vue files
-// eslint-disable-next-line unused-imports/no-unused-vars
+interface carsWithVariants {
+  [packageId: string]: carWithVariants
+}
+
+interface trackWithConfigs {
+  name: string
+  free?: boolean
+  configs: {
+    [configId: string]: {
+      name: string
+      type: string
+    }
+  }
+}
+
+interface tracksWithConfigs {
+  [packageId: string]: trackWithConfigs
+}
+interface iRacingData {
+  carData: carsWithVariants
+  trackData: tracksWithConfigs
+}
+
+interface spinOption {
+  name: string
+  weight?: number // TODO: Add ui to change the weight
+}
+
+interface spinProfile {
+  name: string
+  type: spinProfileType // TODO: Will be used to filter between cars/tracks/time/weather profiles
+  typeLocked: boolean
+  options: {
+    [id: uuid]: spinOption
+  }
+}
+
+interface spinProfiles {
+  [id: uuid]: spinProfile
+}
+
 interface setOwnedContentModalReturn {
-  type: SET_OWNED_CONTENT_MODAL_TYPE
+  type: setOwnedContentModalType
   ownedPackages: ownedPackages
 }
-
-type SET_OWNED_CONTENT_MODAL_TYPE = '' | 'tracks' | 'cars'

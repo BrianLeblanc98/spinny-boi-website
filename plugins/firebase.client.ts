@@ -9,14 +9,14 @@ export default defineNuxtPlugin(() => {
   // Your web app's Firebase configuration
   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   const firebaseConfig = {
-    apiKey: config.public.fireBaseApiKey,
-    authDomain: config.public.fireBaseAuthDomain,
-    databaseURL: config.public.fireBaseDatabaseURL,
-    projectId: config.public.fireBaseProjectId,
-    storageBucket: config.public.fireBaseStorageBucket,
-    messagingSenderId: config.public.fireBaseMessagingSenderId,
-    appId: config.public.fireBaseappId,
-    measurementId: config.public.fireBaseMeasurementId,
+    apiKey: config.public.firebaseApiKey,
+    authDomain: config.public.firebaseAuthDomain,
+    databaseURL: config.public.firebaseDatabaseURL,
+    projectId: config.public.firebaseProjectId,
+    storageBucket: config.public.firebaseStorageBucket,
+    messagingSenderId: config.public.firebaseMessagingSenderId,
+    appId: config.public.firebaseAppId,
+    measurementId: config.public.firebaseMeasurementId,
   }
 
   // Initialize Firebase
