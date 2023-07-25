@@ -1,5 +1,8 @@
 // ESLint doesn't seem to work well with nuxt auto-imports
 /* eslint unused-imports/no-unused-vars: 0 */
+type setOwnedContentModalType = '' | 'tracks' | 'cars'
+type spinProfileType = '' | 'tracks' | 'cars'
+type uuid = `${string}-${string}-${string}-${string}-${string}`
 
 interface packageData {
   name: string
@@ -11,29 +14,36 @@ interface ownedPackages {
   [packageId: string]: packageData
 }
 
-interface iRacingData {
-  carData: {
-    [packageId: string]: {
-      free?: boolean
-      cars: {
-        [carId: string]: {
-          name: string
-        }
-      }
-    }
-  }
-  trackData: {
-    [packageId: string]: {
+interface carWithVariants {
+  free?: boolean
+  cars: {
+    [carId: string]: {
       name: string
-      free?: boolean
-      configs: {
-        [configId: string]: {
-          name: string
-          type: string
-        }
-      }
     }
   }
+}
+
+interface carsWithVariants {
+  [packageId: string]: carWithVariants
+}
+
+interface trackWithConfigs {
+  name: string
+  free?: boolean
+  configs: {
+    [configId: string]: {
+      name: string
+      type: string
+    }
+  }
+}
+
+interface tracksWithConfigs {
+  [packageId: string]: trackWithConfigs
+}
+interface iRacingData {
+  carData: carsWithVariants
+  trackData: tracksWithConfigs
 }
 
 interface spinOption {
@@ -43,13 +53,18 @@ interface spinOption {
 
 interface spinProfile {
   name: string
-  type: string // TODO: Will be used to filter between cars/tracks/time/weather profiles
-  options: spinOption[]
+  type: spinProfileType // TODO: Will be used to filter between cars/tracks/time/weather profiles
+  typeLocked: boolean
+  options: {
+    [id: uuid]: spinOption
+  }
+}
+
+interface spinProfiles {
+  [id: uuid]: spinProfile
 }
 
 interface setOwnedContentModalReturn {
-  type: SET_OWNED_CONTENT_MODAL_TYPE
+  type: setOwnedContentModalType
   ownedPackages: ownedPackages
 }
-
-type SET_OWNED_CONTENT_MODAL_TYPE = '' | 'tracks' | 'cars'

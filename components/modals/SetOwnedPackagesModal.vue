@@ -3,7 +3,7 @@ import { VueFinalModal } from 'vue-final-modal'
 import { useUserStore } from '@/stores/userStore'
 
 const props = defineProps<{
-  type: SET_OWNED_CONTENT_MODAL_TYPE
+  type: setOwnedContentModalType
 }>()
 
 const emit = defineEmits<{
@@ -75,11 +75,11 @@ function handleClosed() {
 
   if (props.type === 'cars') {
     userStore.ownedCars = ownedPackagesToSave
-    saveUserStoreToDatabase(false, true)
+    saveUserStoreToDatabase(false, true, false, false)
   }
   else if (props.type === 'tracks') {
     userStore.ownedTracks = ownedPackagesToSave
-    saveUserStoreToDatabase(true, false)
+    saveUserStoreToDatabase(true, false, false, false)
   }
 }
 </script>

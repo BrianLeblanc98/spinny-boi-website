@@ -3,6 +3,16 @@ export const useIRacingDataStore = defineStore('iRacingData', {
     data: {} as iRacingData,
   }),
   getters: {
+    getCarWithVariantsById: (state) => {
+      return (packageId: string) => {
+        return state.data.carData[packageId]
+      }
+    },
+    getTrackWithConfigsById: (state) => {
+      return (packageId: string) => {
+        return state.data.trackData[packageId]
+      }
+    },
     initialOwnedCarData: (state) => {
       // Called when a new user signs in
       // Create initial ownedPackages for cars to save to the user

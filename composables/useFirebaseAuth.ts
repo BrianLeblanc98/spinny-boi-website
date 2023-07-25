@@ -37,7 +37,7 @@ export default function () {
     return new Promise<void>((resolve, reject) => {
       // When the user signs out, save the data in the store to the database
       // This shouldn't be needed as it gets save when the modal closes, but keeping it for now
-      saveUserStoreToDatabase(true, true)
+      saveUserStoreToDatabase(true, true, true, true)
 
       signOut($auth).then(() => {
         resolve()

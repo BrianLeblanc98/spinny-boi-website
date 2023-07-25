@@ -2,7 +2,7 @@
 import { useUserStore } from '@/stores/userStore'
 
 const setOwnedContentModalShow = ref<boolean>(false)
-const setOwnedContentModalType = ref<SET_OWNED_CONTENT_MODAL_TYPE>('')
+const setOwnedContentModalType = ref<setOwnedContentModalType>('')
 
 const editSpinProfilesModalShow = ref<boolean>(false)
 
@@ -20,13 +20,13 @@ function signIn() {
 
 function signOut() {
   firebaseSignOut().then(() => {
-    userStore.clear()
+    userStore.$reset()
   }).catch(() => {
     console.error('Error signing out')
   })
 }
 
-function openSetOwnedContentModal(type: SET_OWNED_CONTENT_MODAL_TYPE) {
+function openSetOwnedContentModal(type: setOwnedContentModalType) {
   setOwnedContentModalType.value = type
   setOwnedContentModalShow.value = true
 }

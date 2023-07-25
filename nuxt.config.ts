@@ -9,6 +9,10 @@ export default defineNuxtConfig({
   modules: [
     '@pinia/nuxt',
   ],
+  components: [
+    { path: '~/components/modals' },
+    '~/components',
+  ],
   pinia: {
     autoImports: [
       // automatically imports `defineStore`
