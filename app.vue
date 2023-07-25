@@ -22,7 +22,7 @@ onMounted(() => {
   <ClientOnly>
     <TopNav class="sticky top-0 z-50" />
     <select v-model="selectedSpinProfile" @change="handleSelectSpinProfileChange">
-      <option disabled value="">
+      <option :value="EMPTY_UUID" disabled selected>
         Select your spin profile
       </option>
       <option
