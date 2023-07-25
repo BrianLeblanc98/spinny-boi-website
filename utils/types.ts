@@ -1,28 +1,30 @@
+interface packageData {
+  name: string
+  owned: boolean
+  free?: boolean
+}
+
 interface ownedPackages {
-  [package_id: string]: {
-    name: string
-    owned: boolean
-    free?: boolean
-  }
+  [packageId: string]: packageData
 }
 
 interface iRacingData {
   carData: {
-    [package_id: string]: {
+    [packageId: string]: {
       free?: boolean
       cars: {
-        [car_id: string]: {
+        [carId: string]: {
           name: string
         }
       }
     }
   }
   trackData: {
-    [package_id: string]: {
+    [packageId: string]: {
       name: string
       free?: boolean
       configs: {
-        [config_id: string]: {
+        [configId: string]: {
           name: string
           type: string
         }

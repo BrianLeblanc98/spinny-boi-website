@@ -1,25 +1,28 @@
 <script setup lang='ts'>
 import { VueFinalModal } from 'vue-final-modal'
+import { useUserStore } from '@/stores/userStore'
 
 const props = defineProps<{
-  title: string
   type: SET_OWNED_CONTENT_MODAL_TYPE
-  ownedPackages: ownedPackages
 }>()
 
 const emit = defineEmits<{
   (e: 'update:modelValue', modelValue: boolean): void
-  (e: 'closed', data: setOwnedContentModalReturn): setOwnedContentModalReturn
 }>()
 
+const title = ref<string>('')
+const ownedPackages = ref<ownedPackages>({})
 const checkedPackageIds = ref<string[]>([])
 
+const { saveUserStoreToDatabase } = useFirebaseDatabase()
+const userStore = useUserStore()
+
 const sortedPackages = computed(() => {
-  const result = Object.keys(props.ownedPackages).sort((a, b) => {
-    if (props.ownedPackages[a].name > props.ownedPackages[b].name)
+  const result = Object.keys(ownedPackages.value).sort((a, b) => {
+    if (ownedPackages.value[a].name > ownedPackages.value[b].name)
       return 1
 
-    if (props.ownedPackages[a].name < props.ownedPackages[b].name)
+    if (ownedPackages.value[a].name < ownedPackages.value[b].name)
       return -1
 
     return 0
@@ -29,39 +32,55 @@ const sortedPackages = computed(() => {
 })
 
 function handleOpened() {
+  if (props.type === '') {
+    console.error('SetOwnedPackagesModal opened with invalid modal type')
+    return
+  }
+  else if (props.type === 'cars') {
+    title.value = 'Set Owned Cars'
+    ownedPackages.value = userStore.ownedCars
+  }
+  else if (props.type === 'tracks') {
+    title.value = 'Set Owned Tracks'
+    ownedPackages.value = userStore.ownedTracks
+  }
+
   // When the modal is opened, populate checkedIds with previously selected options
-  Object.keys(props.ownedPackages).forEach((packageId) => {
-    if (props.ownedPackages[packageId].owned)
+  Object.keys(ownedPackages.value).forEach((packageId) => {
+    if (ownedPackages.value[packageId].owned)
       checkedPackageIds.value.push(packageId)
   })
 }
 
 function handleClosed() {
-  const optionsToEmit: ownedPackages = {}
+  const ownedPackagesToSave: ownedPackages = {}
 
-  Object.keys(props.ownedPackages).forEach((optionId) => {
-    const optionToEmit = {
-      name: props.ownedPackages[optionId].name,
+  Object.keys(ownedPackages.value).forEach((optionId) => {
+    const packageDataToSave: packageData = {
+      name: ownedPackages.value[optionId].name,
       owned: false,
     }
 
     if (checkedPackageIds.value.includes(optionId))
-      optionToEmit.owned = true
+      packageDataToSave.owned = true
 
-    if (props.ownedPackages[optionId].free)
-      (optionToEmit as any).free = true
+    if (ownedPackages.value[optionId].free)
+      packageDataToSave.free = true
 
-    optionsToEmit[optionId] = optionToEmit
+    ownedPackagesToSave[optionId] = packageDataToSave
   })
 
   // Clear the checkedIds otherwise they will be held over the next time the modal is opened
   checkedPackageIds.value = []
 
-  // Emit which store to update, and the information to update it with
-  emit('closed', {
-    type: props.type,
-    ownedPackages: optionsToEmit,
-  })
+  if (props.type === 'cars') {
+    userStore.ownedCars = ownedPackagesToSave
+    saveUserStoreToDatabase(false, true)
+  }
+  else if (props.type === 'tracks') {
+    userStore.ownedTracks = ownedPackagesToSave
+    saveUserStoreToDatabase(true, false)
+  }
 }
 </script>
 
@@ -93,12 +112,12 @@ function handleClosed() {
         <input
           v-model="checkedPackageIds"
           type="checkbox"
-          :checked="props.ownedPackages[packageId].owned"
+          :checked="ownedPackages[packageId].owned"
           :value="packageId"
-          :disabled="props.ownedPackages[packageId].free"
+          :disabled="ownedPackages[packageId].free"
           class="mr-4 align-middle"
         >
-        <span> {{ props.ownedPackages[packageId].name }} </span>
+        <span> {{ ownedPackages[packageId].name }} </span>
       </li>
     </ul>
   </VueFinalModal>
