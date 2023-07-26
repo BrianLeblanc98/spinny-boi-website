@@ -1,13 +1,13 @@
 <script setup lang='ts'>
 import { ModalsContainer } from 'vue-final-modal'
-import { storeToRefs } from 'pinia'
-import { useUserStore } from '@/stores/userStore'
-
-const userStore = useUserStore()
-
-const { spinProfiles, selectedSpinProfile } = storeToRefs(userStore)
 
 const { updateIRacingDataStoreWithDatabase, saveUserStoreToDatabase } = useFirebaseDatabase()
+
+const userStore = useUserStore()
+const {
+  spinProfiles,
+  selectedSpinProfile,
+} = storeToRefs(userStore)
 
 function handleSelectSpinProfileChange() {
   saveUserStoreToDatabase(false, false, false, true)

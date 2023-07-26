@@ -1,6 +1,5 @@
 <script setup lang='ts'>
 import { VueFinalModal } from 'vue-final-modal'
-import { useUserStore } from '@/stores/userStore'
 
 const props = defineProps<{
   type: setOwnedContentModalType
@@ -15,7 +14,12 @@ const ownedPackages = ref<ownedPackages>({})
 const checkedPackageIds = ref<string[]>([])
 
 const { saveUserStoreToDatabase } = useFirebaseDatabase()
+
 const userStore = useUserStore()
+const {
+  ownedCars,
+  ownedTracks,
+} = storeToRefs(userStore)
 
 const sortedPackages = computed(() => {
   const result = Object.keys(ownedPackages.value).sort((a, b) => {
@@ -38,11 +42,11 @@ function handleOpened() {
   }
   else if (props.type === 'cars') {
     title.value = 'Set Owned Cars'
-    ownedPackages.value = userStore.ownedCars
+    ownedPackages.value = ownedCars.value
   }
   else if (props.type === 'tracks') {
     title.value = 'Set Owned Tracks'
-    ownedPackages.value = userStore.ownedTracks
+    ownedPackages.value = ownedTracks.value
   }
 
   // When the modal is opened, populate checkedIds with previously selected options
@@ -74,11 +78,11 @@ function handleClosed() {
   checkedPackageIds.value = []
 
   if (props.type === 'cars') {
-    userStore.ownedCars = ownedPackagesToSave
+    ownedCars.value = ownedPackagesToSave
     saveUserStoreToDatabase(false, true, false, false)
   }
   else if (props.type === 'tracks') {
-    userStore.ownedTracks = ownedPackagesToSave
+    ownedTracks.value = ownedPackagesToSave
     saveUserStoreToDatabase(true, false, false, false)
   }
 }

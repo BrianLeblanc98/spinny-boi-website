@@ -1,9 +1,6 @@
 <script setup lang='ts'>
-import { useUserStore } from '@/stores/userStore'
-
 const setOwnedContentModalShow = ref<boolean>(false)
 const setOwnedContentModalType = ref<setOwnedContentModalType>('')
-
 const editSpinProfilesModalShow = ref<boolean>(false)
 
 const { user, firebaseSignIn, firebaseSignOut } = useFirebaseAuth()

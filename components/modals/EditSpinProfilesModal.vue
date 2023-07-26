@@ -1,23 +1,19 @@
 <script setup lang='ts'>
 import { VueFinalModal } from 'vue-final-modal'
-import { storeToRefs } from 'pinia'
-
-import { useUserStore } from '@/stores/userStore'
 
 const emit = defineEmits<{
   (e: 'update:modelValue', modelValue: boolean): void
 }>()
 
 const { saveUserStoreToDatabase } = useFirebaseDatabase()
-const userStore = useUserStore()
 
+const userStore = useUserStore()
 const {
   addNewOption,
   createNewSpinProfile,
   deleteOption,
   deleteSpinProfile,
 } = userStore
-
 const {
   ownedCarsAndVariants,
   ownedTracksAndConfigsArray,
