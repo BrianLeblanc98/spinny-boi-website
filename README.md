@@ -14,6 +14,8 @@ A website for iRacing users to randomly choose any combination of Track, Car, Ti
 - [Tailwindcss](https://github.com/tailwindlabs/tailwindcss)
 - [Font Awesome](https://github.com/FortAwesome/Font-Awesome)
   - [Vue Fontawesome](https://github.com/FortAwesome/vue-fontawesome)
+- [Google Fonts](https://fonts.google.com/)
+  - [@nuxtjs/google-fonts](https://github.com/nuxt-modules/google-fonts)
 - [ESLint](https://github.com/eslint/eslint)
   - [@antfu/eslint-config](https://github.com/antfu/eslint-config)
 - [vue-final-modal](https://github.com/vue-final/vue-final-modal)
