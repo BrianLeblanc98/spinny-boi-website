@@ -1,13 +1,12 @@
 <script setup lang='ts'>
-import { storeToRefs } from 'pinia'
-import { useUserStore } from '@/stores/userStore'
-
 const props = defineProps<{
   profileId: uuid
 }>()
 
 const userStore = useUserStore()
-const { spinProfiles } = storeToRefs(userStore)
+const {
+  spinProfiles,
+} = storeToRefs(userStore)
 
 const spinOptions = computed(() => {
   if (!spinProfiles.value[props.profileId]?.options)
