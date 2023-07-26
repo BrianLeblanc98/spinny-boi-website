@@ -106,13 +106,13 @@ function drawWheel(ctx: CanvasRenderingContext2D, rotation: number = 0) {
       ctx.save()
       ctx.translate(canvasOrigin.x, canvasOrigin.y)
       ctx.rotate(startAngle + turnAmount / 2 + rotation)
-      ctx.font = '15px Comic Sans MS'
+      ctx.font = '15px REM'
       ctx.textAlign = 'left'
       ctx.textBaseline = 'middle'
       ctx.fillStyle = 'black'
 
       // TODO: Find a better way to define x
-      ctx.fillText(option.name, wheelRadius / 4, 0)
+      ctx.fillText(option.name, wheelRadius / 6, 0)
       ctx.restore()
     })
   }
@@ -132,7 +132,7 @@ function drawWheel(ctx: CanvasRenderingContext2D, rotation: number = 0) {
   ctx.fill()
 
   // Text
-  ctx.font = '20px Comic Sans MS'
+  ctx.font = '20px REM'
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
   ctx.fillStyle = 'white'

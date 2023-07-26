@@ -8,6 +8,7 @@ export default defineNuxtConfig({
   },
   modules: [
     '@pinia/nuxt',
+    '@nuxtjs/google-fonts',
   ],
   imports: {
     dirs: ['stores'],
@@ -20,6 +21,11 @@ export default defineNuxtConfig({
     autoImports: [
       'defineStore', 'storeToRefs',
     ],
+  },
+  googleFonts: {
+    families: {
+      REM: true,
+    },
   },
   css: [
     '~/assets/css/main.css',
