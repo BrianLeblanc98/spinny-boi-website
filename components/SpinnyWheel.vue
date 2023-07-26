@@ -3,29 +3,54 @@ const props = defineProps<{
   profileId: uuid
 }>()
 
+const spinResultModalShow = ref<boolean>(false)
+const spinResultModalResult = ref<string>('')
+const canvasRef = ref<HTMLCanvasElement | null>(null)
+
 const userStore = useUserStore()
 const {
   spinProfiles,
 } = storeToRefs(userStore)
 
 const spinOptions = computed(() => {
-  if (!spinProfiles.value[props.profileId]?.options)
+  if (props.profileId === EMPTY_UUID || !spinProfiles.value[props.profileId]?.options)
     return []
   else
     return Object.values(spinProfiles.value[props.profileId].options)
 })
 
-const canvasRef = ref<HTMLCanvasElement | null>(null)
 const canvasWidth = 800
 const canvasHeight = 800
-let canvasOrigin = { x: 0, y: 0 }
 const wheelRadius = 380
+let canvasOrigin = { x: 0, y: 0 }
 let isWheelSpinning = false
 
-onUpdated(() => {
-  // When props are changed, i.e. when the spin profile id changes, re-draw the wheel
+onMounted(() => {
   const ctx = canvasRef.value?.getContext('2d')
+
   if (ctx) {
+    canvasOrigin = {
+      x: canvasWidth / 2,
+      y: canvasHeight / 2,
+    }
+
+    // Start the wheel on a random rotation
+    drawWheel(ctx, Math.random() * 2 * Math.PI)
+
+    canvasRef.value?.addEventListener('mousedown', () => {
+      handleMouseClickOnSpin(ctx)
+    })
+  }
+  else {
+    console.error('Canvas context is null or undefined')
+  }
+})
+
+onUpdated(() => {
+  const ctx = canvasRef.value?.getContext('2d')
+
+  // Don't redraw when the modal opens, only update when it closes
+  if (!spinResultModalShow.value && ctx) {
     ctx.clearRect(0, 0, canvasWidth, canvasHeight)
     drawWheel(ctx, Math.random() * 2 * Math.PI)
   }
@@ -39,8 +64,8 @@ function drawWheel(ctx: CanvasRenderingContext2D, rotation: number = 0) {
   ctx.closePath()
   ctx.stroke()
 
-  // Create each slice
-  if (spinOptions.value) {
+  // Create each slice, but only if there are actually spin options
+  if (spinOptions.value.length > 0) {
     spinOptions.value.forEach((option, i) => {
       const turnAmount = (2 * Math.PI / spinOptions.value.length)
       const startAngle = i * turnAmount
@@ -180,37 +205,20 @@ function handleMouseClickOnSpin(ctx: CanvasRenderingContext2D) {
     const rotations = getRotationFrames(winningIndex)
 
     animateWheel(ctx, rotations).then(() => {
-      // TODO: Make this not an alert
-      alert(spinOptions.value[winningIndex].name)
+      spinResultModalResult.value = spinOptions.value[winningIndex].name
+      spinResultModalShow.value = true
       isWheelSpinning = false
     })
   }
 }
-
-onMounted(() => {
-  const ctx = canvasRef.value?.getContext('2d')
-
-  if (ctx) {
-    canvasOrigin = {
-      x: canvasWidth / 2,
-      y: canvasHeight / 2,
-    }
-
-    // Start the wheel on a random rotation
-    drawWheel(ctx, Math.random() * 2 * Math.PI)
-
-    canvasRef.value?.addEventListener('mousedown', () => {
-      handleMouseClickOnSpin(ctx)
-    })
-  }
-  else {
-    console.error('Canvas context is null or undefined')
-  }
-})
 </script>
 
 <template>
   <div>
+    <SpinResultModal
+      v-model="spinResultModalShow"
+      :result="spinResultModalResult"
+    />
     <span v-if="profileId === EMPTY_UUID">No spin profile selected</span>
     <span v-if="profileId !== EMPTY_UUID && spinOptions.length === 0">Spin profile has no options!</span>
 
