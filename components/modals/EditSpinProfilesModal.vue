@@ -29,8 +29,8 @@ function handleClosed() {
 
 <template>
   <VueFinalModal
-    class="flex justify-center items-center"
-    content-class="flex flex-col px-4 pb-2 bg-white rounded border border-gray-100 max-h-[90%] w-100 overflow-auto"
+    class="flex justify-center pt-10"
+    content-class="flex flex-col px-4 pb-2 bg-white rounded border border-gray-100 max-h-[90%] overflow-auto"
     @update:model-value="val => emit('update:modelValue', val)"
     @opened="handleOpened"
     @closed="handleClosed"
@@ -51,18 +51,18 @@ function handleClosed() {
         <li
           v-for="(profile, profileId) in spinProfiles"
           :key="profileId"
-          class="border-b border-slate-200 pb-2 mt-1"
+          class="border-b border-slate-400 pb-2 mt-1"
         >
-          <div class="flex items-center">
+          <div class="flex border-b border-slate-200 pb-1">
             <input
               v-model="profile.name"
               class="border rounded"
               placeholder="Enter spin profile name"
             >
             <select
+              v-if="!profile.typeLocked"
               v-model="profile.type"
               class="border rounded"
-              :disabled="profile.typeLocked"
               @change="() => profile.typeLocked = true"
             >
               <option value="" disabled selected>
@@ -75,11 +75,24 @@ function handleClosed() {
                 Cars
               </option>
             </select>
+
+            <div v-else class="ml-2">
+              <span> - </span>
+              <span v-if="profile.type === 'tracks'">
+                Track Profile
+              </span>
+
+              <span v-else-if="profile.type === 'cars'">
+                Car Profile
+              </span>
+            </div>
+
             <button class="ml-auto" @click="deleteSpinProfile(profileId)">
               <font-awesome-icon icon="fa-solid fa-trash" />
             </button>
           </div>
-          <div class="pl-4">
+
+          <div class="pt-1 pl-4">
             <ul>
               <li
                 v-for="(option, optionId) in profile.options"
@@ -92,6 +105,7 @@ function handleClosed() {
                 <div v-if="profile.type === 'tracks'">
                   <select
                     v-model="option.name"
+                    class="border rounded"
                   >
                     <option
                       v-for="trackName in ownedTracksAndConfigsArray"
@@ -106,6 +120,7 @@ function handleClosed() {
                 <div v-else-if="profile.type === 'cars'">
                   <select
                     v-model="option.name"
+                    class="border rounded"
                   >
                     <option
                       v-for="carName in ownedCarsAndVariants"

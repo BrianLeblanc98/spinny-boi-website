@@ -1,22 +1,21 @@
 <script setup lang='ts'>
-const props = defineProps<{
-  profileId: uuid
-}>()
-
 const spinResultModalShow = ref<boolean>(false)
 const spinResultModalResult = ref<string>('')
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 
+const { saveUserStoreToDatabase } = useFirebaseDatabase()
+
 const userStore = useUserStore()
 const {
   spinProfiles,
+  selectedSpinProfile,
 } = storeToRefs(userStore)
 
 const spinOptions = computed(() => {
-  if (props.profileId === EMPTY_UUID || !spinProfiles.value[props.profileId]?.options)
+  if (selectedSpinProfile.value === EMPTY_UUID || !spinProfiles.value[selectedSpinProfile.value]?.options)
     return []
   else
-    return Object.values(spinProfiles.value[props.profileId].options)
+    return Object.values(spinProfiles.value[selectedSpinProfile.value].options)
 })
 
 const canvasWidth = 800
@@ -211,16 +210,37 @@ function handleMouseClickOnSpin(ctx: CanvasRenderingContext2D) {
     })
   }
 }
+
+function handleSelectSpinProfileChange() {
+  saveUserStoreToDatabase(false, false, false, true)
+}
 </script>
 
 <template>
-  <div>
+  <div class="flex flex-col items-center">
     <SpinResultModal
       v-model="spinResultModalShow"
       :result="spinResultModalResult"
     />
-    <span v-if="profileId === EMPTY_UUID">No spin profile selected</span>
-    <span v-if="profileId !== EMPTY_UUID && spinOptions.length === 0">Spin profile has no options!</span>
+    <select
+      v-model="selectedSpinProfile"
+      class="border rounded"
+      @change="handleSelectSpinProfileChange"
+    >
+      <option :value="EMPTY_UUID" disabled selected>
+        Select your spin profile
+      </option>
+      <option
+        v-for="(profile, id) in spinProfiles"
+        :key="id"
+        :value="id"
+      >
+        {{ profile.name }}
+      </option>
+    </select>
+
+    <span v-if="selectedSpinProfile === EMPTY_UUID">No spin profile selected</span>
+    <span v-if="selectedSpinProfile !== EMPTY_UUID && spinOptions.length === 0">Spin profile has no options!</span>
 
     <canvas
       ref="canvasRef"
