@@ -90,8 +90,8 @@ function handleClosed() {
 
 <template>
   <VueFinalModal
-    class="flex justify-center items-center"
-    content-class="flex flex-col px-4 pb-2 bg-white rounded border border-gray-100 max-h-[90%] w-100 overflow-auto"
+    class="flex justify-center pt-10"
+    content-class="flex flex-col px-4 pb-2 bg-white rounded border border-gray-100 max-h-[90%] overflow-auto"
     @update:model-value="val => emit('update:modelValue', val)"
     @opened="handleOpened"
     @closed="handleClosed"
