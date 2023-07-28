@@ -2,6 +2,7 @@
 const spinResultModalShow = ref<boolean>(false)
 const spinResultModalResult = ref<string>('')
 const canvasRef = ref<HTMLCanvasElement | null>(null)
+const isWheelSpinning = ref<boolean>(false)
 
 const { saveUserStoreToDatabase } = useFirebaseDatabase()
 
@@ -22,7 +23,6 @@ const canvasWidth = 800
 const canvasHeight = 800
 const wheelRadius = 380
 let canvasOrigin = { x: 0, y: 0 }
-let isWheelSpinning = false
 
 onMounted(() => {
   const ctx = canvasRef.value?.getContext('2d')
@@ -86,14 +86,14 @@ function drawWheel(ctx: CanvasRenderingContext2D, rotation: number = 0) {
       // TODO: Come up with a way to guarantee no side by side colors
       if (spinOptions.value.length % 2 === 0) {
         // Color scheme when it's an even number
-        color = i % 2 === 0 ? 'red' : 'orange'
+        color = i % 2 === 0 ? 'purple' : 'white'
       }
       else {
         // Color scheme when it's a multiple of 3
         if (i % 3 === 0)
-          color = 'red'
+          color = 'pink'
         else if (i % 3 === 1)
-          color = 'orange'
+          color = 'purple'
         else
           color = 'white'
       }
@@ -105,28 +105,46 @@ function drawWheel(ctx: CanvasRenderingContext2D, rotation: number = 0) {
       ctx.save()
       ctx.translate(canvasOrigin.x, canvasOrigin.y)
       ctx.rotate(startAngle + turnAmount / 2 + rotation)
-      ctx.font = '15px REM'
       ctx.textAlign = 'left'
       ctx.textBaseline = 'middle'
       ctx.fillStyle = 'black'
 
+      // There's probably a better way to do this, but this works for now
+      let font = ''
+      if (option.name.length >= 65)
+        font = '9px REM'
+      else if (option.name.length >= 50)
+        font = '11px REM'
+      else if (option.name.length >= 45)
+        font = '14px REM'
+      else if (option.name.length >= 40)
+        font = '15px REM'
+      else if (option.name.length >= 35)
+        font = '16px REM'
+      else if (option.name.length >= 30)
+        font = '17px REM'
+      else font = '20px REM'
+
+      ctx.font = font
+
       // TODO: Find a better way to define x
-      ctx.fillText(option.name, wheelRadius / 6, 0)
+      ctx.fillText(option.name, wheelRadius / 10, 0)
       ctx.restore()
     })
+    // console.log('---------------------')
   }
 
   // Create the center spin button
   // Center circle
   ctx.beginPath()
-  ctx.arc(canvasOrigin.x, canvasOrigin.y, 30, 0, 2 * Math.PI)
+  ctx.arc(canvasOrigin.x, canvasOrigin.y, 26, 0, 2 * Math.PI)
   ctx.fillStyle = 'black'
   ctx.fill()
 
   // Triangle
   ctx.beginPath()
   ctx.moveTo(canvasOrigin.x - 8, canvasOrigin.y - 25)
-  ctx.lineTo(canvasOrigin.x, canvasOrigin.y - 40)
+  ctx.lineTo(canvasOrigin.x, canvasOrigin.y - 37)
   ctx.lineTo(canvasOrigin.x + 8, canvasOrigin.y - 25)
   ctx.fill()
 
@@ -143,36 +161,38 @@ function getWinRotation(winningIndex: number): number {
   while (returnValue < 0)
     returnValue += 2 * Math.PI
 
+  const sliceSize = (2 * Math.PI / spinOptions.value.length)
+  returnValue += (Math.random() - 0.5) * sliceSize
   return returnValue
-}
-
-// https://stackoverflow.com/a/66902484
-function linspace(start: number, stop: number, num: number, endpoint = true): number[] {
-  const div = endpoint ? (num - 1) : num
-  const step = (stop - start) / div
-  return Array.from({ length: num }, (_, i) => start + step * i)
 }
 
 // 500 Frames ~= 7.5 seconds
 function getRotationFrames(winningIndex: number): number[] {
+  // https://gist.github.com/gre/1650294#file-easing-js-L11
+  const easeInCubic = (t: number) => t * t * t
+  const easeOutQuad = (t: number) => t * (2 - t)
+
   const resultArray: number[] = []
+  const winRotation = getWinRotation(winningIndex)
+  const randomStartingOffset = Math.random() * 2 * Math.PI
 
-  // // For the first 250 frames, just spin at really fast speeds
-  let stepNumPerFullRotation = 10
-  let step = 2 * Math.PI / stepNumPerFullRotation
+  // Ease in to full speed
+  for (let i = 0; i < 1; i += 0.015)
+    resultArray.push(easeInCubic(i) * 2 * (2 * Math.PI) + randomStartingOffset)
 
-  for (let i = 1; i <= stepNumPerFullRotation * 20; i++)
-    resultArray.push(i * step)
+  // End speed of the ease in ~= Math.PI / 8, so do a bunch of full rotations at that speed (1 rotation = 16 steps)
+  for (let i = 0; i < (16 * 9); i++)
+    resultArray.push(i * Math.PI / 8 + winRotation)
 
-  // Taper off
-  stepNumPerFullRotation = 25
-  step = 2 * Math.PI / stepNumPerFullRotation
+  for (let i = 0; i < 4; i++) {
+    const divisor = i * 8 + 16 // 16, 24, 32, 40
+    for (let j = 0; j < divisor * 2; j++)
+      resultArray.push(j * Math.PI / divisor + winRotation)
+  }
 
-  for (let i = 1; i <= stepNumPerFullRotation * 4; i++)
-    resultArray.push(i * step)
-
-  // Land on the winningIndex
-  resultArray.push(...linspace(0, getWinRotation(winningIndex), 200))
+  // Start speed of the ease out is ~= Math.PI / 50
+  for (let i = 0; i < 1; i += 0.005)
+    resultArray.push(easeOutQuad(i) * (2 * Math.PI) + winRotation)
 
   return resultArray
 }
@@ -198,15 +218,15 @@ function animateWheel(ctx: CanvasRenderingContext2D, rotations: number[]): Promi
 }
 
 function handleMouseClickOnSpin(ctx: CanvasRenderingContext2D) {
-  if (!isWheelSpinning && spinOptions.value.length > 0) {
-    isWheelSpinning = true
+  if (!isWheelSpinning.value && spinOptions.value.length > 0) {
+    isWheelSpinning.value = true
     const winningIndex = Math.floor(Math.random() * spinOptions.value.length)
     const rotations = getRotationFrames(winningIndex)
 
     animateWheel(ctx, rotations).then(() => {
       spinResultModalResult.value = spinOptions.value[winningIndex].name
       spinResultModalShow.value = true
-      isWheelSpinning = false
+      isWheelSpinning.value = false
     })
   }
 }
@@ -225,6 +245,7 @@ function handleSelectSpinProfileChange() {
     <select
       v-model="selectedSpinProfile"
       class="border rounded"
+      :disabled="isWheelSpinning"
       @change="handleSelectSpinProfileChange"
     >
       <option :value="EMPTY_UUID" disabled selected>

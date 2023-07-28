@@ -46,7 +46,7 @@ function openEditSpinProfiles() {
 
     <div class="flex justify-between items-center bg-pink-100 py-2 mb-2 border-b border-black">
       <span class="py-1 px-4 text-xl font-semibold italic tracking-widest">
-        Spinny Boi
+        Spinny Boi (v0.0.1 pre-pre-alpha)
       </span>
       <div class="flex justify-around  space-x-3 pr-4">
         <span

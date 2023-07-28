@@ -17,6 +17,7 @@ const {
 const {
   ownedCarsAndVariants,
   ownedTracksAndConfigsArray,
+  selectedSpinProfile,
   spinProfiles,
 } = storeToRefs(userStore)
 
@@ -86,6 +87,10 @@ function handleClosed() {
                 Car Profile
               </span>
             </div>
+
+            <span v-if="selectedSpinProfile === profileId" class="ml-10 italic text-red-400">
+              Selected Profile
+            </span>
 
             <button class="ml-auto" @click="deleteSpinProfile(profileId)">
               <font-awesome-icon icon="fa-solid fa-trash" />
