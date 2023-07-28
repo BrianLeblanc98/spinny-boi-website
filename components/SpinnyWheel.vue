@@ -57,11 +57,13 @@ onUpdated(() => {
 
 function drawWheel(ctx: CanvasRenderingContext2D, rotation: number = 0) {
   // Create the frame of the spinner wheel
-  ctx.beginPath()
   ctx.moveTo(canvasOrigin.x, canvasOrigin.y)
-  ctx.arc(canvasOrigin.x, canvasOrigin.y, wheelRadius, 0, 2 * Math.PI)
+  ctx.beginPath()
+  ctx.arc(canvasOrigin.x, canvasOrigin.y, wheelRadius + 1, 0, 2 * Math.PI)
   ctx.closePath()
+  ctx.lineWidth = 2
   ctx.stroke()
+  ctx.lineWidth = 1
 
   // Create each slice, but only if there are actually spin options
   if (spinOptions.value.length > 0) {
