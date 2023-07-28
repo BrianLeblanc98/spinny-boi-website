@@ -50,18 +50,21 @@ function openEditSpinProfiles() {
       </span>
       <div class="flex justify-around  space-x-3 pr-4">
         <span
+          v-if="user"
           class="text-sm text-blue-500 hover:text-blue-800 cursor-pointer"
           @click="openEditSpinProfiles()"
         >
           Edit spin profiles
         </span>
         <span
+          v-if="user"
           class="text-sm text-blue-500 hover:text-blue-800 cursor-pointer"
           @click="openSetOwnedContentModal('tracks')"
         >
           Set Owned Tracks
         </span>
         <span
+          v-if="user"
           class="text-sm text-blue-500 hover:text-blue-800 cursor-pointer"
           @click="openSetOwnedContentModal('cars')"
         >
