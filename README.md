@@ -4,6 +4,7 @@ https://spinny-boi-website.vercel.app/
 ## Description
 A website for iRacing users to randomly choose any combination of Track, Car, Time of day, and conditions!
 
+Inspiration from https://pickerwheel.com/ and https://iracing-week-planner.tmo.lol/
 ## Tech stack
 - [Vue 3](https://github.com/vuejs/)
 - [Nuxt 3](https://github.com/nuxt/nuxt)
